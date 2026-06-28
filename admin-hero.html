@@ -3,121 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แก้ไข Hero Widget - BaanBall369</title>
+    <title>TOPFORME369 - Master Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background-color: #0f0f0f; color: #fff; font-family: 'Prompt', sans-serif; padding: 20px; }
-        .panel { max-width: 800px; margin: 0 auto; background: #181818; border: 1px solid #333; border-radius: 12px; padding: 25px; }
-        .form-control { background: #080808; border: 1px solid #444; color: #fff; }
-        .form-control:focus { background: #080808; border-color: #D4AF37; color: #fff; box-shadow: none; }
-        label { font-size: 0.8rem; color: #aaa; margin-bottom: 3px; }
-        .head { color: #D4AF37; font-weight: 800; border-bottom: 1px solid #333; padding-bottom: 6px; margin: 15px 0 10px 0; }
+        :root { --color-black: #0a0a0a; --color-dark: #1a1a1a; --color-gold: #ffd700; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Prompt', sans-serif; }
+        body { background-color: var(--color-dark); color: white; min-height: 100vh; }
+        
+        .admin-header { background: var(--color-black); border-bottom: 3px solid var(--color-gold); padding: 1rem 0; position: sticky; top: 0; z-index: 1000; }
+        .sidebar { background-color: var(--color-black); border-right: 2px solid var(--color-gold); min-height: calc(100vh - 70px); padding: 1rem; }
+        .sidebar .nav-link { color: white; padding: 0.9rem 1rem; border-radius: 10px; margin-bottom: 0.5rem; transition: 0.3s; display: flex; align-items: center; cursor: pointer; font-weight: 600;}
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: var(--color-gold); color: var(--color-black); font-weight:bold;}
+        .sidebar .nav-link i { width: 30px; text-align: center; }
+        
+        .content-area { padding: 2rem; min-height: calc(100vh - 70px); }
+        .admin-card { background-color: var(--color-black); border: 1px solid var(--color-gold); border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        
+        .form-control, .form-select { background-color: var(--color-dark); border: 1px solid #444; color: white; }
+        .form-control:focus, .form-select:focus { background-color: var(--color-dark); border-color: var(--color-gold); color: white; box-shadow: none; }
+        label { color: #aaa; font-size: 0.82rem; margin-bottom: 4px; }
+        
+        .btn-gold { background: var(--color-gold); color: var(--color-black); font-weight: bold; border: none; }
+        .btn-gold:hover { background: #e6c200; color: var(--color-black); }
+        
+        .section-panel { display: none; }
+        .section-panel.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .head-title { color: var(--color-gold); border-bottom: 1px solid #333; padding-bottom: 8px; margin: 20px 0 15px 0; font-weight: 800; font-size:1.1rem; }
+        .dynamic-item { background: #141414; border: 1px solid #333; border-left: 4px solid var(--color-gold); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
     </style>
 </head>
 <body>
 
-    <div class="panel">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="m-0 text-warning fs-5"><i class="fas fa-sliders-h me-2"></i>แก้ไขบอร์ด Hero Match ตัวที่ 1</h2>
-            <a href="widget-hero.html" class="btn btn-outline-light btn-sm" target="_blank">เปิดดูตัวบอร์ดจริง</a>
+    <header class="admin-header">
+        <div class="container-fluid d-flex justify-content-between align-items-center px-4">
+            <div class="fs-4 fw-bold text-warning"><i class="fas fa-crown me-2"></i>TOPFORME369 - Master Panel</div>
+            <div>
+                <a href="widget-hero.html" target="_blank" class="btn btn-outline-light btn-sm me-2"><i class="fas fa-eye"></i> ดูบอร์ด Hero</a>
+                <a href="widget-gurus.html" target="_blank" class="btn btn-warning btn-sm fw-bold text-dark"><i class="fas fa-star"></i> ดูบอร์ดเซียน VIP</a>
+            </div>
         </div>
+    </header>
 
-        <input type="hidden" id="bid">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-lg-2 sidebar">
+                <nav class="nav flex-column mt-2">
+                    <a class="nav-link active" onclick="showSection('hero', this)"><i class="fas fa-flag"></i> 1. บอร์ดคู่เด็ด (Hero)</a>
+                    <a class="nav-link" onclick="showSection('gurus', this)"><i class="fas fa-star"></i> 2. บอร์ดเซียน (เพิ่มบล็อกอิสระ)</a>
+                </nav>
+            </div>
 
-        <div class="head">🏆 ข้อมูลตรงกลาง</div>
-        <div class="row g-2">
-            <div class="col-md-4"><label>ชื่อรายการ</label><input type="text" id="ln" class="form-control" placeholder="ฟุตบอลโลก 2026"></div>
-            <div class="col-md-4"><label>เวลาแข่ง</label><input type="text" id="mt" class="form-control" placeholder="29 มิ.ย. 2569 02:00"></div>
-            <div class="col-md-4"><label>URL โลโก้ถ้วย</label><input type="text" id="ll" class="form-control" placeholder="https://.../shield.png"></div>
+            <div class="col-md-9 col-lg-10 content-area">
+                
+                <div id="hero" class="section-panel active">
+                    <h2 class="text-warning fw-bold mb-4">🚩 จัดการบอร์ด Hero VS (Full Options)</h2>
+                    <div class="admin-card">
+                        <input type="hidden" id="bid-1">
+
+                        <div class="head-title mt-0">🏆 ข้อมูลตรงกลาง</div>
+                        <div class="row g-3">
+                            <div class="col-md-4"><label>ชื่อรายการ</label><input type="text" id="ln" class="form-control"></div>
+                            <div class="col-md-4"><label>เวลาแข่ง</label><input type="text" id="mt" class="form-control"></div>
+                            <div class="col-md-4"><label>URL โลโก้ถ้วย</label><input type="text" id="ll" class="form-control"></div>
+                        </div>
+
+                        <div class="head-title" style="color:#658D1B;">🚩 ทีมเหย้า (ฝั่งซ้าย)</div>
+                        <div class="row g-3">
+                            <div class="col-md-4"><label>ชื่อทีม</label><input type="text" id="hn" class="form-control"></div>
+                            <div class="col-md-4"><label>URL รูปธง</label><input type="text" id="hf" class="form-control"></div>
+                            <div class="col-md-4"><label>สีป้าย (HEX)</label><input type="color" id="hc" class="form-control form-control-color w-100"></div>
+                            <div class="col-md-8"><label>URL รูปนักเตะพื้นใส (.PNG)</label><input type="text" id="hp" class="form-control"></div>
+                            <div class="col-md-4"><label>คะแนนโหวตเริ่มต้น</label><input type="number" id="hv" class="form-control"></div>
+                        </div>
+
+                        <div class="head-title" style="color:#B01E35;">🚩 ทีมเยือน (ฝั่งขวา)</div>
+                        <div class="row g-3">
+                            <div class="col-md-4"><label>ชื่อทีม</label><input type="text" id="an" class="form-control"></div>
+                            <div class="col-md-4"><label>URL รูปธง</label><input type="text" id="af" class="form-control"></div>
+                            <div class="col-md-4"><label>สีป้าย (HEX)</label><input type="color" id="ac" class="form-control form-control-color w-100"></div>
+                            <div class="col-md-8"><label>URL รูปนักเตะพื้นใส (.PNG)</label><input type="text" id="ap" class="form-control"></div>
+                            <div class="col-md-4"><label>คะแนนโหวตเริ่มต้น</label><input type="number" id="av" class="form-control"></div>
+                        </div>
+
+                        <div class="head-title text-info">🔥 ทรรศนะ & ราคาต่อรอง</div>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label>ทรรศนะราคา</label><input type="text" id="od" class="form-control"></div>
+                            <div class="col-md-3"><label>โหวตสกอร์ต่ำ</label><input type="number" id="vu" class="form-control"></div>
+                            <div class="col-md-3"><label>โหวตสกอร์สูง</label><input type="number" id="vo" class="form-control"></div>
+                        </div>
+
+                        <button class="btn btn-gold w-100 mt-4 py-3 fs-5" onclick="saveHero()"><i class="fas fa-save me-2"></i>อัปเดตข้อมูลขึ้นบอร์ด Hero VS ทันที</button>
+                    </div>
+                </div>
+
+                <div id="gurus" class="section-panel">
+                    <h2 class="text-warning fw-bold mb-4"><i class="fas fa-star me-2"></i>ระบบคุมทีเด็ดเซียน VIP (เพิ่มลบจัดเรียงได้อิสระ)</h2>
+                    
+                    <div class="admin-card mb-4">
+                        <input type="hidden" id="bid-2">
+                        <label class="text-warning fw-bold">ข้อความหัวเรื่องบอร์ดบนสุด</label>
+                        <input type="text" id="g-head" class="form-control fw-bold fs-5 text-warning" value="🔥 ทีเด็ดเซียนบอล VIP ประจำวัน">
+                    </div>
+
+                    <div class="admin-card" style="border-color: #00FF66;">
+                        <h4 class="text-success mb-3"><i class="fas fa-plus-circle me-2"></i>ฟอร์มเพิ่มข้อมูลเซียนลงในรายการ</h4>
+                        <input type="hidden" id="edit-idx" value="-1">
+                        <div class="row g-3">
+                            <div class="col-md-4"><label>ชื่อเซียน</label><input type="text" id="t-name" class="form-control" placeholder="เช่น เฮียกบ ล้มโต๊ะ"></div>
+                            <div class="col-md-5"><label>URL รูปโปรไฟล์ (สี่เหลี่ยม)</label><input type="text" id="t-img" class="form-control" placeholder="https://..."></div>
+                            <div class="col-md-3"><label>สถิติความแม่น (สีซิลเวอร์)</label><input type="text" id="t-rec" class="form-control text-info fw-bold" placeholder="เช่น WIN 5 วันติด"></div>
+                            <div class="col-md-5"><label>คู่บอลวิเคราะห์ (แสดงผลสีขาว)</label><input type="text" id="t-mat" class="form-control" placeholder="เชลซี vs อาร์เซนอล"></div>
+                            <div class="col-md-4"><label>ฟันธงทีเด็ด (แสดงผลสีเขียวสะท้อนแสง)</label><input type="text" id="t-pic" class="form-control text-success fw-bold" placeholder="ต่อ เชลซี -0.5"></div>
+                            <div class="col-md-3"><label>ป้ายผล</label>
+                                <select id="t-sta" class="form-select fw-bold"><option value="WAIT">⏳ WAIT (รอ)</option><option value="WIN">✔ WIN (เข้า)</option><option value="LOSE">✖ LOSE (ตาย)</option></select>
+                            </div>
+                        </div>
+                        <button class="btn btn-success mt-4 px-4 fw-bold" onclick="pushGuru()"><i class="fas fa-arrow-down me-2"></i>เพิ่มลงรายการข้างล่าง</button>
+                        <button class="btn btn-outline-secondary mt-4 px-3 ms-2" onclick="resetT()">ยกเลิก</button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h4 class="text-warning mb-3">📋 จัดลำดับบล็อกที่จะแสดงบนหน้าเว็บ (<span id="cnt">0</span> บล็อก)</h4>
+                        <div id="list-render" class="mb-4"></div>
+                        <button class="btn btn-gold w-100 py-3 fs-4 fw-bold text-dark shadow" onclick="saveCloud()"><i class="fas fa-cloud-upload-alt me-2"></i>อัปเดตบล็อกทั้งหมดขึ้นหน้าเว็บ ทันที</button>
+                    </div>
+                </div>
+
+            </div>
         </div>
-
-        <div class="head" style="color:#658D1B;">🚩 ทีมเหย้า (ซ้าย)</div>
-        <div class="row g-2">
-            <div class="col-md-4"><label>ชื่อทีม</label><input type="text" id="hn" class="form-control" placeholder="แอฟริกาใต้"></div>
-            <div class="col-md-4"><label>URL รูปธง</label><input type="text" id="hf" class="form-control"></div>
-            <div class="col-md-4"><label>สีป้าย (HEX)</label><input type="color" id="hc" class="form-control form-control-color w-100" value="#658D1B"></div>
-            <div class="col-md-8"><label>URL รูปนักเตะพื้นใส (.PNG)</label><input type="text" id="hp" class="form-control"></div>
-            <div class="col-md-4"><label>โหวตเริ่มต้น</label><input type="number" id="hv" class="form-control" value="6"></div>
-        </div>
-
-        <div class="head" style="color:#B01E35;">🚩 ทีมเยือน (ขวา)</div>
-        <div class="row g-2">
-            <div class="col-md-4"><label>ชื่อทีม</label><input type="text" id="an" class="form-control" placeholder="แคนาดา"></div>
-            <div class="col-md-4"><label>URL รูปธง</label><input type="text" id="af" class="form-control"></div>
-            <div class="col-md-4"><label>สีป้าย (HEX)</label><input type="color" id="ac" class="form-control form-control-color w-100" value="#6E0000"></div>
-            <div class="col-md-8"><label>URL รูปนักเตะพื้นใส (.PNG)</label><input type="text" id="ap" class="form-control"></div>
-            <div class="col-md-4"><label>โหวตเริ่มต้น</label><input type="number" id="av" class="form-control" value="25"></div>
-        </div>
-
-        <div class="head">🔥 ราคาต่อรอง</div>
-        <div class="row g-2">
-            <div class="col-md-6"><label>ทรรศนะราคา</label><input type="text" id="od" class="form-control" placeholder="แคนาดา ต่อ ครึ่งควบลูก"></div>
-            <div class="col-md-3"><label>โหวตต่ำ</label><input type="number" id="vu" class="form-control" value="13"></div>
-            <div class="col-md-3"><label>โหวตสูง</label><input type="number" id="vo" class="form-control" value="8"></div>
-        </div>
-
-        <button class="btn btn-warning fw-bold w-100 mt-4 py-2 text-dark fs-6" onclick="save()"><i class="fas fa-save me-2"></i>อัปเดตบอร์ดทันที</button>
     </div>
 
     <script>
         const db = window.supabase.createClient('https://pcrurldhpubyznrdackb.supabase.co', 'sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0');
+        let gurusList = [];
 
-        async function load() {
-            const { data } = await db.from('tbl_hero_board').select('*').order('id', { ascending: false }).limit(1);
-            if(!data || !data[0]) return; 
-            const d = data[0];
-            document.getElementById('bid').value = d.id;
-            document.getElementById('ln').value = d.league_name; document.getElementById('mt').value = d.match_time; document.getElementById('ll').value = d.league_logo;
-            document.getElementById('hn').value = d.home_name; document.getElementById('hf').value = d.home_flag; document.getElementById('hc').value = d.home_color; document.getElementById('hp').value = d.home_player; document.getElementById('hv').value = d.vote_home;
-            document.getElementById('an').value = d.away_name; document.getElementById('af').value = d.away_flag; document.getElementById('ac').value = d.away_color; document.getElementById('ap').value = d.away_player; document.getElementById('av').value = d.vote_away;
-            document.getElementById('od').value = d.odds_text; document.getElementById('vu').value = d.vote_under; document.getElementById('vo').value = d.vote_over;
+        function showSection(id, el) {
+            document.querySelectorAll('.section-panel').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.sidebar .nav-link').forEach(e => e.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            if(el) el.classList.add('active');
         }
 
-        async function save() {
-            // แพ็กข้อมูล (ถ้าแอดมินไม่กรอกอะไรเลย จะใช้ค่า Default พื้นฐานให้ทันที)
-            const payload = {
-                league_name: document.getElementById('ln').value || 'ฟุตบอลโลก 2026', 
-                match_time: document.getElementById('mt').value || '29 มิ.ย. 2569 02:00', 
-                league_logo: document.getElementById('ll').value || 'https://cdn-icons-png.flaticon.com/512/805/805503.png',
-                home_name: document.getElementById('hn').value || 'แอฟริกาใต้', 
-                home_flag: document.getElementById('hf').value || 'https://flagcdn.com/w160/za.png', 
-                home_color: document.getElementById('hc').value || '#658D1B', 
-                home_player: document.getElementById('hp').value || 'https://cdn.pixabay.com/photo/2024/04/10/01/19/ai-generated-8687050_1280.png', 
-                vote_home: parseInt(document.getElementById('hv').value || 6),
-                away_name: document.getElementById('an').value || 'แคนาดา', 
-                away_flag: document.getElementById('af').value || 'https://flagcdn.com/w160/ca.png', 
-                away_color: document.getElementById('ac').value || '#6E0000', 
-                away_player: document.getElementById('ap').value || 'https://cdn.pixabay.com/photo/2024/04/10/01/20/ai-generated-8687053_1280.png', 
-                vote_away: parseInt(document.getElementById('av').value || 25),
-                odds_text: document.getElementById('od').value || 'แคนาดา ต่อ ครึ่งควบลูก', 
-                vote_under: parseInt(document.getElementById('vu').value || 13), 
-                vote_over: parseInt(document.getElementById('vo').value || 8)
-            };
-
-            const currentId = document.getElementById('bid').value;
-
-            // ตรรกะสำคัญ: ถ้าไม่มี ID (ตารางว่าง) ให้ใช้ INSERT / แต่ถ้ามี ID แล้วให้ใช้ UPDATE
-            if (!currentId) {
-                const { data, error } = await db.from('tbl_hero_board').insert([payload]).select();
-                if (error) {
-                    alert('❌ พังตอนสร้างแถวแรก: ' + error.message);
-                } else {
-                    document.getElementById('bid').value = data[0].id;
-                    alert('🎉 สร้างข้อมูลตั้งต้นแถวแรกสำเร็จแล้วครับ!! ตอนนี้กลับไปเปิดหน้า widget-hero.html ได้เลย!');
-                }
-            } else {
-                const { error } = await db.from('tbl_hero_board').update(payload).eq('id', currentId);
-                if (error) {
-                    alert('❌ พังตอนอัปเดต: ' + error.message);
-                } else {
-                    alert('✅ อัปเดตข้อมูลขึ้นคลาวด์เรียบร้อยแล้ว!');
-                }
+        async function loadAll() {
+            // โหลด Hero
+            const r1 = await db.from('tbl_hero_board').select('*').order('id', { ascending: false }).limit(1);
+            if(r1.data && r1.data[0]) {
+                const d = r1.data[0];
+                document.getElementById('bid-1').value = d.id; document.getElementById('ln').value = d.league_name; document.getElementById('mt').value = d.match_time; document.getElementById('ll').value = d.league_logo; document.getElementById('hn').value = d.home_name; document.getElementById('hf').value = d.home_flag; document.getElementById('hc').value = d.home_color; document.getElementById('hp').value = d.home_player; document.getElementById('hv').value = d.vote_home; document.getElementById('an').value = d.away_name; document.getElementById('af').value = d.away_flag; document.getElementById('ac').value = d.away_color; document.getElementById('ap').value = d.away_player; document.getElementById('av').value = d.vote_away; document.getElementById('od').value = d.odds_text; document.getElementById('vu').value = d.vote_under; document.getElementById('vo').value = d.vote_over;
+            }
+            // โหลด Gurus
+            const r2 = await db.from('wb_gurus_pro').select('*').order('id', { ascending: false }).limit(1);
+            if(r2.data && r2.data[0]) {
+                document.getElementById('bid-2').value = r2.data[0].id;
+                document.getElementById('g-head').value = r2.data[0].header_title;
+                gurusList = r2.data[0].gurus_list || [];
+                draw();
             }
         }
 
-        load();
+        async function saveHero() {
+            try {
+                const payload = { league_name: document.getElementById('ln').value, match_time: document.getElementById('mt').value, league_logo: document.getElementById('ll').value, home_name: document.getElementById('hn').value, home_flag: document.getElementById('hf').value, home_color: document.getElementById('hc').value, home_player: document.getElementById('hp').value, vote_home: parseInt(document.getElementById('hv').value||0), away_name: document.getElementById('an').value, away_flag: document.getElementById('af').value, away_color: document.getElementById('ac').value, away_player: document.getElementById('ap').value, vote_away: parseInt(document.getElementById('av').value||0), odds_text: document.getElementById('od').value, vote_under: parseInt(document.getElementById('vu').value||0), vote_over: parseInt(document.getElementById('vo').value||0) };
+                const id = document.getElementById('bid-1').value;
+                if(!id) { const { data, error } = await db.from('tbl_hero_board').insert([payload]).select(); if(error) throw error; document.getElementById('bid-1').value = data[0].id; } 
+                else { const { error } = await db.from('tbl_hero_board').update(payload).eq('id', id); if(error) throw error; }
+                alert('✅ อัปเดตบอร์ด Hero เรียบร้อย!');
+            } catch(e) { alert('❌ ' + e.message); }
+        }
+
+        function draw() {
+            const box = document.getElementById('list-render');
+            document.getElementById('cnt').innerText = gurusList.length;
+            if(gurusList.length === 0) { box.innerHTML = '<p class="text-muted text-center py-4">ยังไม่มีบล็อกข้อมูล กรุณากรอกข้างบนแล้วกดเพิ่มครับ</p>'; return; }
+            box.innerHTML = '';
+            gurusList.forEach((g, i) => {
+                box.innerHTML += `
+                    <div class="dynamic-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge bg-warning text-dark">${i+1}</span>
+                            <img src="${g.img}" style="width:45px;height:45px;border-radius:50%;object-fit:cover;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4140/4140048.png'">
+                            <div>
+                                <div class="fw-bold fs-6">${g.name} <span class="badge bg-dark border ms-1">${g.status}</span></div>
+                                <div style="font-size:0.82rem; color:#ccc;">${g.match} | <span style="color:#00FF66; font-weight:bold;">${g.pick}</span></div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-light" onclick="swap(${i}, -1)" ${i===0?'disabled':''}><i class="fas fa-arrow-up"></i></button>
+                            <button class="btn btn-sm btn-outline-light" onclick="swap(${i}, 1)" ${i===gurusList.length-1?'disabled':''}><i class="fas fa-arrow-down"></i></button>
+                            <button class="btn btn-sm btn-outline-info ms-1" onclick="edit(${i})"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-danger ms-1" onclick="del(${i})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function pushGuru() {
+            const n = document.getElementById('t-name').value; if(!n) return alert('ใส่ชื่อเซียนก่อนครับ');
+            const obj = { name: n, img: document.getElementById('t-img').value || 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png', record: document.getElementById('t-rec').value, match: document.getElementById('t-mat').value, pick: document.getElementById('t-pic').value, status: document.getElementById('t-sta').value };
+            const idx = parseInt(document.getElementById('edit-idx').value);
+            if(idx >= 0) gurusList[idx] = obj; else gurusList.push(obj);
+            resetT(); draw();
+        }
+        function edit(i) { const g = gurusList[i]; document.getElementById('edit-idx').value = i; document.getElementById('t-name').value = g.name; document.getElementById('t-img').value = g.img; document.getElementById('t-rec').value = g.record; document.getElementById('t-mat').value = g.match; document.getElementById('t-pic').value = g.pick; document.getElementById('t-sta').value = g.status; }
+        function del(i) { if(confirm('ลบบล็อกนี้?')) { gurusList.splice(i, 1); draw(); } }
+        function swap(i, dir) { const tmp = gurusList[i]; gurusList[i] = gurusList[i+dir]; gurusList[i+dir] = tmp; draw(); }
+        function resetT() { document.getElementById('edit-idx').value = -1; document.querySelectorAll('input[id^="t-"]').forEach(e => e.value=''); }
+
+        async function saveCloud() {
+            const payload = { header_title: document.getElementById('g-head').value, gurus_list: gurusList };
+            const id = document.getElementById('bid-2').value;
+            if(!id) { const { data } = await db.from('wb_gurus_pro').insert([payload]).select(); document.getElementById('bid-2').value = data[0].id; }
+            else await db.from('wb_gurus_pro').update(payload).eq('id', id);
+            alert('🎉 อัปเดตบล็อกการ์ดขึ้นเว็บเรียบร้อยแล้ว!');
+        }
+
+        window.onload = loadAll;
     </script>
 </body>
 </html>
