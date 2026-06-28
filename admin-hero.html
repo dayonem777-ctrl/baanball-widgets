@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไข Hero Widget - BaanBall369</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { background-color: #0f0f0f; color: #fff; font-family: 'Prompt', sans-serif; padding: 20px; }
+        .panel { max-width: 800px; margin: 0 auto; background: #181818; border: 1px solid #333; border-radius: 12px; padding: 25px; }
+        .form-control { background: #080808; border: 1px solid #444; color: #fff; }
+        .form-control:focus { background: #080808; border-color: #D4AF37; color: #fff; box-shadow: none; }
+        label { font-size: 0.8rem; color: #aaa; margin-bottom: 3px; }
+        .head { color: #D4AF37; font-weight: 800; border-bottom: 1px solid #333; padding-bottom: 6px; margin: 15px 0 10px 0; }
+    </style>
+</head>
+<body>
+
+    <div class="panel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="m-0 text-warning fs-5"><i class="fas fa-sliders-h me-2"></i>แก้ไขบอร์ด Hero Match ตัวที่ 1</h2>
+            <a href="widget-hero.html" class="btn btn-outline-light btn-sm" target="_blank">เปิดดูตัวบอร์ดจริง</a>
+        </div>
+
+        <input type="hidden" id="bid">
+
+        <div class="head">🏆 ข้อมูลตรงกลาง</div>
+        <div class="row g-2">
+            <div class="col-md-4"><label>ชื่อรายการ</label><input type="text" id="ln" class="form-control" placeholder="ฟุตบอลโลก 2026"></div>
+            <div class="col-md-4"><label>เวลาแข่ง</label><input type="text" id="mt" class="form-control" placeholder="29 มิ.ย. 2569 02:00"></div>
+            <div class="col-md-4"><label>URL โลโก้ถ้วย</label><input type="text" id="ll" class="form-control" placeholder="https://.../shield.png"></div>
+        </div>
+
+        <div class="head" style="color:#658D1B;">🚩 ทีมเหย้า (ซ้าย)</div>
+        <div class="row g-2">
+            <div class="col-md-4"><label>ชื่อทีม</label><input type="text" id="hn" class="form-control" placeholder="แอฟริกาใต้"></div>
+            <div class="col-md-4"><label>URL รูปธง</label><input type="text" id="hf" class="form-control"></div>
+            <div class="col-md-4"><label>สีป้าย (HEX)</label><input type="color" id="hc" class="form-control form-control-color w-100" value="#658D1B"></div>
+            <div class="col-md-8"><label>URL รูปนักเตะพื้นใส (.PNG)</label><input type="text" id="hp" class="form-control"></div>
+            <div class="col-md-4"><label>โหวตเริ่มต้น</label><input type="number" id="hv" class="form-control" value="6"></div>
+        </div>
+
+        <div class="head" style="color:#B01E35;">🚩 ทีมเยือน (ขวา)</div>
+        <div class="row g-2">
+            <div class="col-md-4"><label>ชื่อทีม</label><input type="text" id="an" class="form-control" placeholder="แคนาดา"></div>
+            <div class="col-md-4"><label>URL รูปธง</label><input type="text" id="af" class="form-control"></div>
+            <div class="col-md-4"><label>สีป้าย (HEX)</label><input type="color" id="ac" class="form-control form-control-color w-100" value="#6E0000"></div>
+            <div class="col-md-8"><label>URL รูปนักเตะพื้นใส (.PNG)</label><input type="text" id="ap" class="form-control"></div>
+            <div class="col-md-4"><label>โหวตเริ่มต้น</label><input type="number" id="av" class="form-control" value="25"></div>
+        </div>
+
+        <div class="head">🔥 ราคาต่อรอง</div>
+        <div class="row g-2">
+            <div class="col-md-6"><label>ทรรศนะราคา</label><input type="text" id="od" class="form-control" placeholder="แคนาดา ต่อ ครึ่งควบลูก"></div>
+            <div class="col-md-3"><label>โหวตต่ำ</label><input type="number" id="vu" class="form-control" value="13"></div>
+            <div class="col-md-3"><label>โหวตสูง</label><input type="number" id="vo" class="form-control" value="8"></div>
+        </div>
+
+        <button class="btn btn-warning fw-bold w-100 mt-4 py-2 text-dark fs-6" onclick="save()"><i class="fas fa-save me-2"></i>อัปเดตบอร์ดทันที</button>
+    </div>
+
+    <script>
+        const db = window.supabase.createClient('https://pcrurldhpubyznrdackb.supabase.co', 'sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0');
+
+        async function load() {
+            const { data } = await db.from('tbl_hero_board').select('*').order('id', { ascending: false }).limit(1);
+            if(!data || !data[0]) return; 
+            const d = data[0];
+            document.getElementById('bid').value = d.id;
+            document.getElementById('ln').value = d.league_name; document.getElementById('mt').value = d.match_time; document.getElementById('ll').value = d.league_logo;
+            document.getElementById('hn').value = d.home_name; document.getElementById('hf').value = d.home_flag; document.getElementById('hc').value = d.home_color; document.getElementById('hp').value = d.home_player; document.getElementById('hv').value = d.vote_home;
+            document.getElementById('an').value = d.away_name; document.getElementById('af').value = d.away_flag; document.getElementById('ac').value = d.away_color; document.getElementById('ap').value = d.away_player; document.getElementById('av').value = d.vote_away;
+            document.getElementById('od').value = d.odds_text; document.getElementById('vu').value = d.vote_under; document.getElementById('vo').value = d.vote_over;
+        }
+
+        async function save() {
+            // แพ็กข้อมูล (ถ้าแอดมินไม่กรอกอะไรเลย จะใช้ค่า Default พื้นฐานให้ทันที)
+            const payload = {
+                league_name: document.getElementById('ln').value || 'ฟุตบอลโลก 2026', 
+                match_time: document.getElementById('mt').value || '29 มิ.ย. 2569 02:00', 
+                league_logo: document.getElementById('ll').value || 'https://cdn-icons-png.flaticon.com/512/805/805503.png',
+                home_name: document.getElementById('hn').value || 'แอฟริกาใต้', 
+                home_flag: document.getElementById('hf').value || 'https://flagcdn.com/w160/za.png', 
+                home_color: document.getElementById('hc').value || '#658D1B', 
+                home_player: document.getElementById('hp').value || 'https://cdn.pixabay.com/photo/2024/04/10/01/19/ai-generated-8687050_1280.png', 
+                vote_home: parseInt(document.getElementById('hv').value || 6),
+                away_name: document.getElementById('an').value || 'แคนาดา', 
+                away_flag: document.getElementById('af').value || 'https://flagcdn.com/w160/ca.png', 
+                away_color: document.getElementById('ac').value || '#6E0000', 
+                away_player: document.getElementById('ap').value || 'https://cdn.pixabay.com/photo/2024/04/10/01/20/ai-generated-8687053_1280.png', 
+                vote_away: parseInt(document.getElementById('av').value || 25),
+                odds_text: document.getElementById('od').value || 'แคนาดา ต่อ ครึ่งควบลูก', 
+                vote_under: parseInt(document.getElementById('vu').value || 13), 
+                vote_over: parseInt(document.getElementById('vo').value || 8)
+            };
+
+            const currentId = document.getElementById('bid').value;
+
+            // ตรรกะสำคัญ: ถ้าไม่มี ID (ตารางว่าง) ให้ใช้ INSERT / แต่ถ้ามี ID แล้วให้ใช้ UPDATE
+            if (!currentId) {
+                const { data, error } = await db.from('tbl_hero_board').insert([payload]).select();
+                if (error) {
+                    alert('❌ พังตอนสร้างแถวแรก: ' + error.message);
+                } else {
+                    document.getElementById('bid').value = data[0].id;
+                    alert('🎉 สร้างข้อมูลตั้งต้นแถวแรกสำเร็จแล้วครับ!! ตอนนี้กลับไปเปิดหน้า widget-hero.html ได้เลย!');
+                }
+            } else {
+                const { error } = await db.from('tbl_hero_board').update(payload).eq('id', currentId);
+                if (error) {
+                    alert('❌ พังตอนอัปเดต: ' + error.message);
+                } else {
+                    alert('✅ อัปเดตข้อมูลขึ้นคลาวด์เรียบร้อยแล้ว!');
+                }
+            }
+        }
+
+        load();
+    </script>
+</body>
+</html>
