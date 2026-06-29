@@ -1,90 +1,75 @@
 <!DOCTYPE html>
 <html lang="th">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-      * {
-        font-family: "Prompt", sans-serif;
-      }
-      .card-border {
-        border: 1px solid #c5a059;
-      } /* สีทอง */
+        body { font-family: 'Prompt', sans-serif; background: transparent; }
+        .bg-premium { background: linear-gradient(145deg, #0a0a0a, #1a1a1a); }
+        .gold-border { border: 1px solid #C5A059; box-shadow: 0 0 10px rgba(197, 160, 89, 0.2); }
     </style>
-  </head>
-  <body class="bg-transparent p-2">
-    <div
-      id="guru-container"
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
-    ></div>
+</head>
+<body class="p-2">
 
-    <script>
-      const DB_URL =
-        "https://pcrurldhpubyznrdackb.supabase.co/rest/v1/wb_gurus_pro";
-      const API_KEY = "sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0";
+<div id="guru-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="text-white text-center py-10">กำลังโหลดความพรีเมียม...</div>
+</div>
 
-      async function loadGurus() {
+<script>
+    const DB_URL = "https://pcrurldhpubyznrdackb.supabase.co/rest/v1/wb_gurus_pro";
+    const API_KEY = "sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0";
+
+    async function init() {
         const container = document.getElementById("guru-container");
         try {
-          const res = await fetch(DB_URL, {
-            headers: { apikey: API_KEY, Authorization: `Bearer ${API_KEY}` },
-          });
-          const data = await res.json();
-          if (!data || data.length === 0) return;
+            const response = await fetch(DB_URL, { 
+                headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}`, 'Prefer': 'return=representation' } 
+            });
+            const data = await response.json();
+            
+            if(!data || data.length === 0) {
+                container.innerHTML = '<div class="text-white text-center col-span-full">ไม่พบข้อมูลเซียน</div>';
+                return;
+            }
 
-          const gurus = data[data.length - 1].gurus_list || [];
-          container.innerHTML = gurus
-            .map(
-              (g) => `
-                <div class="bg-[#0c0c0c] card-border text-white p-4 rounded-xl shadow-2xl">
-                    <div class="flex items-center gap-3 mb-3">
-                        <img src="${
-                          g.img
-                        }" class="w-10 h-10 rounded-full border border-[#C5A059] object-cover">
+            const gurus = data[data.length - 1].gurus_list || [];
+            container.innerHTML = gurus.map(g => `
+                <div class="bg-premium gold-border rounded-xl p-4 transition-transform hover:scale-[1.02]">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="${g.img}" class="w-12 h-12 rounded-full border-2 border-[#C5A059] object-cover">
                         <div class="flex-grow">
-                            <h3 class="font-bold text-sm text-white">${
-                              g.name
-                            } <span class="text-[#C5A059] font-normal">• ${
-                g.views || "100"
-              } views</span></h3>
-                            <div class="text-xs text-gray-400">สถิติ: ${renderStats(
-                              g.stats || []
-                            )}</div>
+                            <h3 class="font-bold text-white text-sm">${g.name}</h3>
+                            <div class="text-[10px] text-[#C5A059] uppercase tracking-wider">TOP FORM • ${g.views || '100'} Views</div>
                         </div>
-                        <div class="border border-[#C5A059] text-[#C5A059] px-2 py-1 rounded font-bold text-sm">${
-                          g.percent || "80%"
-                        }</div>
+                        <div class="text-[#C5A059] font-bold text-sm bg-white/5 px-2 py-1 rounded border border-[#C5A059]/30">${g.percent || '80%'}</div>
                     </div>
                     
-                    <div class="text-base font-bold text-gray-300 mb-2 truncate">${
-                      g.match
-                    }</div>
+                    <div class="text-gray-300 font-bold text-base mb-3 truncate">${g.match}</div>
                     
-                    <div class="text-xs text-white font-medium bg-white/5 p-2 rounded border-l-2 border-[#C5A059]">
-                        ${g.status === "WIN" ? "⭐" : "📖"} ${g.pick}
+                    <div class="bg-black/40 border border-white/10 p-2 rounded-lg flex items-center gap-2">
+                        <span class="text-white font-medium text-xs">${g.pick}</span>
+                    </div>
+                    
+                    <div class="mt-3 flex justify-between items-center text-[10px] text-gray-500">
+                        <span>${g.status === "WIN" ? "✅ สำเร็จ" : "📖 ติดตาม"}</span>
+                        <span>${renderStats(g.stats)}</span>
                     </div>
                 </div>
-            `
-            )
-            .join("");
-        } catch (e) {
-          console.error(e);
+            `).join("");
+        } catch(e) {
+            container.innerHTML = '<div class="text-red-400 text-center col-span-full">ระบบขัดข้อง โปรดติดต่อแอดมิน</div>';
         }
-      }
+    }
 
-      function renderStats(arr) {
-        // รองรับทั้ง Array หรือ string ถ้าในหลังบ้านกรอกเป็น W,W,L
-        const statsArray = Array.isArray(arr) ? arr : arr.split(",");
-        return statsArray
-          .map((s) => (s === "W" ? "✅" : s === "L" ? "❌" : "➖"))
-          .join(" ");
-      }
-      loadGurus();
-    </script>
-  </body>
+    function renderStats(stats) {
+        if(!stats) return "";
+        const s = Array.isArray(stats) ? stats : stats.split(',');
+        return s.map(x => x === 'W' ? '⭐' : '➖').join(' ');
+    }
+    
+    init();
+</script>
+</body>
 </html>
