@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOPFORM369 - จัดการบอร์ด 2 (เซียน VIP)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div class="admin-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo-text">TOPFORM<span class="gold-text">369</span></h1>
+                <p class="subtitle">Master Panel</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="index.html" class="nav-item"><i class="fas fa-th-large"></i> แดชบอร์ด</a>
+                <div class="nav-divider">จัดการบอร์ด</div>
+                <a href="admin-board1.html" class="nav-item"><i class="fas fa-flag"></i> จัดการบอร์ด Hero</a>
+                <a href="admin-board2.html" class="nav-item active"><i class="fas fa-star"></i> จัดการบอร์ด เซียน VIP</a>
+                <a href="admin-board3.html" class="nav-item"><i class="fas fa-trophy"></i> จัดการบอร์ด บอลโลก</a>
+                <div class="nav-divider">ระบบ</div>
+                <a href="#" class="nav-item"><i class="fas fa-cog"></i> ตั้งค่าเว็บ</a>
+            </nav>
+        </aside>
+
+        <div class="main-content">
+            <header class="topbar">
+                <h2 class="page-title">⭐ จัดการบอร์ด 2 : ระบบคุมทีเด็ดเซียน VIP</h2>
+                <div class="topbar-actions">
+                    <a href="widget-gurus.html" target="_blank" class="btn btn-outline"><i class="fas fa-eye"></i> ดูบอร์ดนี้บนเว็บ</a>
+                </div>
+            </header>
+
+            <main class="content-wrapper">
+                
+                <div class="action-section mb-4">
+                    <input type="hidden" id="bid-2">
+                    <label class="text-warning fw-bold mb-2">ข้อความหัวเรื่องบอร์ดบนสุด</label>
+                    <input type="text" id="g-head" class="form-control fw-bold fs-5 text-warning" value="🔥 ทีเด็ดเซียนบอล VIP ประจำวัน">
+                </div>
+
+                <div class="action-section mb-4" style="border-color: rgba(0, 255, 102, 0.3);">
+                    <h4 class="text-success mb-3"><i class="fas fa-plus-circle me-2"></i>ฟอร์มเพิ่มข้อมูลเซียนลงในรายการ</h4>
+                    <input type="hidden" id="edit-idx" value="-1">
+                    <div class="row g-3">
+                        <div class="col-md-4"><label>ชื่อเซียน</label><input type="text" id="t-name" class="form-control" placeholder="เช่น เฮียกบ ล้มโต๊ะ"></div>
+                        <div class="col-md-5"><label>URL รูปโปรไฟล์ (สี่เหลี่ยม)</label><input type="text" id="t-img" class="form-control" placeholder="https://..."></div>
+                        <div class="col-md-3"><label>สถิติความแม่น (สีซิลเวอร์)</label><input type="text" id="t-rec" class="form-control text-info fw-bold" placeholder="เช่น WIN 5 วันติด"></div>
+                        <div class="col-md-5"><label>คู่บอลวิเคราะห์</label><input type="text" id="t-mat" class="form-control" placeholder="เชลซี vs อาร์เซนอล"></div>
+                        <div class="col-md-4"><label>ฟันธงทีเด็ด</label><input type="text" id="t-pic" class="form-control text-success fw-bold" placeholder="ต่อ เชลซี -0.5"></div>
+                        <div class="col-md-3"><label>ป้ายผล</label>
+                            <select id="t-sta" class="form-select fw-bold">
+                                <option value="WAIT">⏳ WAIT (รอ)</option>
+                                <option value="WIN">✔ WIN (เข้า)</option>
+                                <option value="LOSE">✖ LOSE (ตาย)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button class="btn btn-gold px-4" onclick="pushGuru()"><i class="fas fa-arrow-down me-2"></i>เพิ่มลงรายการข้างล่าง</button>
+                        <button class="btn btn-outline px-3 ms-2" onclick="resetT()">ยกเลิก</button>
+                    </div>
+                </div>
+
+                <div class="action-section">
+                    <h4 class="text-warning mb-3">📋 จัดลำดับบล็อกที่จะแสดงบนหน้าเว็บ (<span id="cnt">0</span> บล็อก)</h4>
+                    <div id="list-render" class="mb-4"></div>
+                    <button class="btn btn-gold w-100 py-3 fs-5" onclick="saveCloud()"><i class="fas fa-cloud-upload-alt me-2"></i>อัปเดตบล็อกทั้งหมดขึ้นหน้าเว็บ ทันที</button>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const db = window.supabase.createClient('https://pcrurldhpubyznrdackb.supabase.co', 'sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0');
+        let gurusList = [];
+
+        async function loadGurus() {
+            const r2 = await db.from('wb_gurus_pro').select('*').order('id', { ascending: false }).limit(1);
+            if(r2.data && r2.data[0]) {
+                document.getElementById('bid-2').value = r2.data[0].id;
+                document.getElementById('g-head').value = r2.data[0].header_title;
+                gurusList = r2.data[0].gurus_list || [];
+                draw();
+            }
+        }
+
+        function draw() {
+            const box = document.getElementById('list-render');
+            document.getElementById('cnt').innerText = gurusList.length;
+            if(gurusList.length === 0) { box.innerHTML = '<p class="text-muted text-center py-4">ยังไม่มีบล็อกข้อมูล กรุณากรอกข้างบนแล้วกดเพิ่มครับ</p>'; return; }
+            box.innerHTML = '';
+            gurusList.forEach((g, i) => {
+                box.innerHTML += `
+                    <div class="dynamic-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="badge bg-warning text-dark">${i+1}</span>
+                            <img src="${g.img}" style="width:45px;height:45px;border-radius:50%;object-fit:cover;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4140/4140048.png'">
+                            <div>
+                                <div class="fw-bold fs-6 text-white">${g.name} <span class="badge bg-dark border ms-1">${g.status}</span></div>
+                                <div style="font-size:0.82rem; color:#ccc;">${g.match} | <span style="color:#00FF66; font-weight:bold;">${g.pick}</span></div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline p-2" onclick="swap(${i}, -1)" ${i===0?'disabled':''}><i class="fas fa-arrow-up"></i></button>
+                            <button class="btn btn-outline p-2" onclick="swap(${i}, 1)" ${i===gurusList.length-1?'disabled':''}><i class="fas fa-arrow-down"></i></button>
+                            <button class="btn btn-outline p-2 text-info" onclick="edit(${i})"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-outline p-2 text-danger" onclick="del(${i})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function pushGuru() {
+            const n = document.getElementById('t-name').value; if(!n) return alert('ใส่ชื่อเซียนก่อนครับ');
+            const obj = { name: n, img: document.getElementById('t-img').value || 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png', record: document.getElementById('t-rec').value, match: document.getElementById('t-mat').value, pick: document.getElementById('t-pic').value, status: document.getElementById('t-sta').value };
+            const idx = parseInt(document.getElementById('edit-idx').value);
+            if(idx >= 0) gurusList[idx] = obj; else gurusList.push(obj);
+            resetT(); draw();
+        }
+
+        function edit(i) { const g = gurusList[i]; document.getElementById('edit-idx').value = i; document.getElementById('t-name').value = g.name; document.getElementById('t-img').value = g.img; document.getElementById('t-rec').value = g.record; document.getElementById('t-mat').value = g.match; document.getElementById('t-pic').value = g.pick; document.getElementById('t-sta').value = g.status; }
+        function del(i) { if(confirm('ลบบล็อกนี้?')) { gurusList.splice(i, 1); draw(); } }
+        function swap(i, dir) { const tmp = gurusList[i]; gurusList[i] = gurusList[i+dir]; gurusList[i+dir] = tmp; draw(); }
+        function resetT() { document.getElementById('edit-idx').value = -1; document.querySelectorAll('input[id^="t-"]').forEach(e => e.value=''); }
+
+        async function saveCloud() {
+            const payload = { header_title: document.getElementById('g-head').value, gurus_list: gurusList };
+            const id = document.getElementById('bid-2').value;
+            if(!id) { const { data } = await db.from('wb_gurus_pro').insert([payload]).select(); document.getElementById('bid-2').value = data[0].id; }
+            else await db.from('wb_gurus_pro').update(payload).eq('id', id);
+            alert('🎉 อัปเดตบล็อกการ์ดขึ้นเว็บเรียบร้อยแล้ว!');
+        }
+
+        window.onload = loadGurus;
+    </script>
+</body>
+</html>
