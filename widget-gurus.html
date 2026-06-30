@@ -1,66 +1,45 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Prompt', sans-serif; background: transparent; margin: 0; padding: 0; overflow: hidden; }
-        .bg-premium { background: #0c0c0c; }
-        .gold-border { border: 1px solid rgba(197, 160, 89, 0.4); }
-        .text-gold { color: #C5A059; }
-        /* คลาสตัดส่วนเกิน */
-        #guru-container { padding-bottom: 5px; } 
-    </style>
-</head>
-<body>
+<body style="margin:0; padding:0; background:transparent; font-family:Prompt, sans-serif;">
+    <div id="guru-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:15px;"></div>
 
-<div id="guru-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-    </div>
+    <script>
+        const DB_URL = "https://pcrurldhpubyznrdackb.supabase.co/rest/v1/wb_gurus_pro";
+        const API_KEY = "sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0";
 
-<script>
-    const DB_URL = "https://pcrurldhpubyznrdackb.supabase.co/rest/v1/wb_gurus_pro";
-    const API_KEY = "sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0";
-
-    async function init() {
-        const container = document.getElementById("guru-container");
-        try {
-            const response = await fetch(DB_URL, { 
-                headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}` } 
-            });
-            const data = await response.json();
+        fetch(DB_URL, { headers: { 'apikey': API_KEY, 'Authorization': 'Bearer ' + API_KEY } })
+        .then(r => r.json())
+        .then(data => {
             if(!data || data.length === 0) return;
-
             const gurus = data[data.length - 1].gurus_list || [];
-            container.innerHTML = gurus.map(g => `
-                <div class="bg-premium gold-border rounded-xl p-3 shadow-lg">
-                    <div class="flex items-center gap-3 mb-2">
-                        <img src="${g.img}" class="w-10 h-10 rounded-full border border-[#C5A059] object-cover">
-                        <div class="flex-grow">
-                            <h3 class="font-bold text-white text-xs">${g.name}</h3>
-                            <div class="text-[9px] text-gray-500 uppercase tracking-tighter">FORM • ${g.views || '100'} Views</div>
+            
+            document.getElementById("guru-container").innerHTML = gurus.map(g => `
+                <div style="background:#0c0c0c; border:1px solid #C5A059; border-radius:12px; padding:15px; color:white; box-shadow:0 4px 15px rgba(0,0,0,0.5);">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                        <img src="${g.img}" style="width:45px; height:45px; border-radius:50%; border:2px solid #C5A059;">
+                        <div style="flex-grow:1;">
+                            <div style="font-weight:bold; font-size:14px;">${g.name}</div>
+                            <div style="font-size:10px; color:#C5A059; text-transform:uppercase;">${g.views || '100'} Views | ${g.percent || '80%'} Win</div>
                         </div>
-                        <div class="text-[#C5A059] font-bold text-xs border border-[#C5A059]/30 px-1.5 py-0.5 rounded">${g.percent || '80%'}</div>
                     </div>
                     
-                    <div class="text-gray-400 font-bold text-sm mb-2 truncate">${g.match}</div>
-                    
-                    <div class="bg-white/5 border-l-2 border-[#C5A059] p-2 rounded-r-md">
-                        <span class="text-white font-medium text-[11px] leading-tight">${g.pick}</span>
+                    <div style="font-size:13px; font-weight:bold; color:#ccc; margin-bottom:8px;">⚽ ${g.match}</div>
+                    <div style="background:rgba(197, 160, 89, 0.1); border-left:3px solid #C5A059; padding:8px; font-size:12px; margin-bottom:10px;">
+                        🎯 <span style="font-weight:bold; color:#fff;">${g.pick}</span>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #333; pt:10px;">
+                        <div style="font-size:10px; color:#888;">สถิติย้อนหลัง</div>
+                        <div style="font-size:12px;">${renderStats(g.stats)}</div>
                     </div>
                 </div>
             `).join("");
+        });
 
-            // --- สั่งให้ Blogger ขยายความสูงตามเนื้อหาจริง ---
-            setTimeout(() => {
-                const height = document.getElementById('guru-container').offsetHeight;
-                window.parent.postMessage({ frameHeight: height }, '*');
-            }, 500);
-
-        } catch(e) { console.error(e); }
-    }
-    init();
-</script>
+        function renderStats(stats) {
+            const arr = Array.isArray(stats) ? stats : (stats || "").split(',');
+            return arr.map(s => s === 'W' ? '✅' : s === 'L' ? '❌' : '➖').join(' ');
+        }
+    </script>
 </body>
 </html>
