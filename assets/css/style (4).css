@@ -1,0 +1,149 @@
+/* ================= CSS VARIABLES (กำหนดโทนสีหลัก) ================= */
+:root {
+    --bg-dark: #09090b;
+    --bg-panel: #121215;
+    --bg-card: #18181c;
+    --gold: #D4AF37;
+    --gold-hover: #F3E5AB;
+    --silver: #A1A1AA;
+    --white: #FAFAFA;
+    --border: rgba(212, 175, 55, 0.2);
+    --border-light: rgba(255, 255, 255, 0.05);
+    --danger: #ef4444;
+}
+
+/* ================= RESET & BASIC ================= */
+* {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Prompt', sans-serif;
+}
+body {
+    background-color: var(--bg-dark); color: var(--white);
+    min-height: 100vh; overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+
+/* ================= LAYOUT ================= */
+.admin-container { display: flex; height: 100vh; overflow: hidden; }
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+    width: 260px; background-color: var(--bg-panel);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+}
+.sidebar-header {
+    padding: 30px 20px; border-bottom: 1px solid var(--border-light);
+    text-align: center;
+}
+.logo-text { font-size: 1.8rem; font-weight: 800; letter-spacing: 1px; }
+.gold-text { color: var(--gold); }
+.subtitle { color: var(--silver); font-size: 0.85rem; margin-top: 5px; }
+
+.sidebar-nav { padding: 20px 10px; overflow-y: auto; flex-grow: 1; }
+.nav-divider {
+    color: #52525b; font-size: 0.75rem; font-weight: 600;
+    margin: 20px 0 10px 15px; text-transform: uppercase; letter-spacing: 1px;
+}
+.nav-item {
+    display: flex; align-items: center; gap: 15px;
+    padding: 12px 20px; color: var(--silver);
+    border-radius: 8px; margin-bottom: 5px; font-weight: 500;
+    transition: all 0.3s ease;
+}
+.nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+.nav-item:hover { background-color: rgba(255, 255, 255, 0.03); color: var(--white); }
+.nav-item.active {
+    background: linear-gradient(90deg, var(--gold) 0%, #b8952b 100%);
+    color: #000; font-weight: 700; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+.text-danger:hover { color: var(--danger); background-color: rgba(239, 68, 68, 0.1); }
+
+/* ================= MAIN CONTENT ================= */
+.main-content { flex-grow: 1; display: flex; flex-direction: column; overflow-y: auto; }
+
+.topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 40px; background-color: var(--bg-panel);
+    border-bottom: 1px solid var(--border-light);
+    position: sticky; top: 0; z-index: 10;
+}
+.page-title { font-size: 1.4rem; font-weight: 600; color: var(--gold); }
+.topbar-actions { display: flex; gap: 15px; }
+
+.content-wrapper { padding: 40px; }
+
+/* ================= STATS CARDS ================= */
+.grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 40px; }
+.stat-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 30px 20px; text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); border-color: var(--gold); }
+.stat-value { font-size: 2.5rem; font-weight: 800; color: var(--gold); margin-bottom: 10px; }
+.stat-label { color: var(--silver); font-size: 0.9rem; }
+.highlight-card { background: linear-gradient(145deg, #18181c 0%, #111 100%); border: 1px solid #333; }
+
+/* ================= SECTIONS & BUTTONS ================= */
+.action-section {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 30px; margin-bottom: 30px;
+}
+.section-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; border-bottom: 1px solid var(--border-light); padding-bottom: 15px; }
+.action-buttons { display: flex; gap: 15px; flex-wrap: wrap; }
+
+.btn {
+    padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem;
+    transition: all 0.2s ease; border: none;
+}
+.btn:active { transform: scale(0.96); }
+
+.btn-gold { background-color: var(--gold); color: #000; }
+.btn-gold:hover { background-color: var(--gold-hover); box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+
+.btn-outline { background-color: transparent; border: 1px solid var(--silver); color: var(--silver); }
+.btn-outline:hover { border-color: var(--white); color: var(--white); }
+
+.btn-luxury { background: #27272a; border: 1px solid #3f3f46; color: var(--white); }
+.btn-luxury:hover { background: var(--gold); border-color: var(--gold); color: #000; }
+
+.btn-danger { background-color: transparent; border: 1px solid var(--danger); color: var(--danger); }
+.btn-danger:hover { background-color: var(--danger); color: #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+
+/* Responsive */
+@media (max-width: 1024px) { .grid-stats { grid-template-columns: repeat(2, 1fr); } }
+
+/* --- สไตล์ช่องกรอกข้อมูล & บล็อกรายการ (Form & Items) --- */
+.form-control, .form-select { background-color: #18181b !important; border: 1px solid #3f3f46 !important; color: #fff !important; font-size: 0.9rem; padding: 10px !important; }
+.form-control:focus, .form-select:focus { border-color: var(--gold) !important; box-shadow: 0 0 12px rgba(212, 175, 55, 0.25) !important; }
+label { color: var(--silver); font-size: 0.82rem; margin-bottom: 6px; font-weight: 500; display: block; }
+.dynamic-item { background: #18181c; border: 1px solid #27272a; border-left: 4px solid var(--gold); border-radius: 8px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+:root {
+    --bg-dark: #050505;
+    --bg-card: #0c0c0c;
+    --gold: #C5A059;
+    --silver: #A0A0A0;
+    --white: #F8F8F8;
+    --border: rgba(197, 160, 89, 0.2);
+}
+
+body { background-color: var(--bg-dark); color: var(--white); font-family: 'Prompt', sans-serif; }
+
+/* การ์ดพรีเมียม */
+.premium-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    transition: 0.3s;
+}
+.premium-card:hover { border-color: var(--gold); box-shadow: 0 0 20px rgba(197, 160, 89, 0.1); }
+
+/* ตัวเลขและสีทอง */
+.text-gold { color: var(--gold); }
+.border-gold { border-color: var(--gold); }
