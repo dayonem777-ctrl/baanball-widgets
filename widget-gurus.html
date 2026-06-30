@@ -1,45 +1,255 @@
 <!DOCTYPE html>
 <html lang="th">
-<body style="margin:0; padding:0; background:transparent; font-family:Prompt, sans-serif;">
-    <div id="guru-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:15px;"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget - ทีเด็ดเซียน VIP Premium</title>
+    <!-- โหลดฟอนต์ Prompt และ Icon -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* รีเซ็ตค่าขอบและระยะห่าง (เคล็ดลับที่ทำให้ปุ่มไม่ล้น) */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: transparent; 
+            font-family: 'Prompt', sans-serif;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        /* -------------------------------------------
+           Layout: หน้ากระดาน 3 บล็อก (Desktop)
+        ------------------------------------------- */
+        #guru-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            align-items: start;
+        }
+
+        /* -------------------------------------------
+           Card Design: ระดับ Premium VIP
+        ------------------------------------------- */
+        .guru-card {
+            background: linear-gradient(180deg, #161616 0%, #0a0a0a 100%);
+            border: 1px solid rgba(197, 160, 89, 0.3); /* ขอบสีทองจางๆ */
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* แถบสีทองคาดด้านบนสุดของการ์ด */
+        .guru-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, #8b6d31, #F3E5AB, #8b6d31);
+        }
+
+        .guru-card:hover {
+            transform: translateY(-8px); /* ยกการ์ดลอยขึ้น */
+            box-shadow: 0 15px 35px rgba(197, 160, 89, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-color: rgba(197, 160, 89, 0.8); /* ขอบทองสว่างขึ้น */
+        }
+
+        /* ส่วนหัว: โปรไฟล์ */
+        .guru-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .guru-img {
+            width: 64px; 
+            height: 64px;
+            border-radius: 50%;
+            border: 2px solid #C5A059;
+            padding: 2px; /* ขอบซ้อน */
+            background: #000;
+            object-fit: cover;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.3); /* เงาทองรอบรูป */
+        }
+
+        .guru-info { flex-grow: 1; }
+        .guru-name { font-weight: 600; font-size: 1.15rem; color: #ffffff; margin-bottom: 5px; letter-spacing: 0.5px; }
+        
+        .guru-rate { 
+            font-size: 0.8rem; 
+            color: #F3E5AB; /* สีทองสว่าง */
+            display: inline-flex; 
+            align-items: center; 
+            background: rgba(197, 160, 89, 0.1); 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(197, 160, 89, 0.2); 
+        }
+        
+        /* ส่วนกลาง: แมตช์ */
+        .match-text { 
+            font-size: 0.95rem; 
+            font-weight: 500; 
+            color: #d1d5db; 
+            margin-bottom: 16px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .match-text i { color: #888; }
+
+        /* กล่องทรรศนะฟันธง */
+        .pick-box {
+            background: linear-gradient(90deg, rgba(220, 38, 38, 0.12) 0%, rgba(220, 38, 38, 0.02) 100%);
+            border-left: 4px solid #ef4444; /* แดงสดสว่าง */
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .pick-label { 
+            font-size: 0.75rem; 
+            color: #9ca3af; 
+            margin-bottom: 6px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+        .pick-value { 
+            font-size: 1.05rem; 
+            font-weight: 600; 
+            color: #F3E5AB; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
+        }
+
+        /* ส่วนสถิติ */
+        .stats-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            padding-top: 15px; 
+            border-top: 1px solid rgba(255, 255, 255, 0.05); 
+        }
+        .stats-label { font-size: 0.8rem; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; }
+        .stats-icons { letter-spacing: 6px; font-size: 0.95rem; }
+
+        /* ปุ่มดูบทวิเคราะห์ (จัด Flex กึ่งกลางเป๊ะ) */
+        .btn-analysis {
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 8px;
+            width: 100%;
+            background: linear-gradient(135deg, #a4161a 0%, #e5383b 100%);
+            color: #ffffff;
+            padding: 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.15); /* ขอบกระจก */
+            box-shadow: 0 4px 15px rgba(229, 56, 59, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-analysis:hover {
+            background: linear-gradient(135deg, #ba1826 0%, #f02d3a 100%);
+            box-shadow: 0 8px 25px rgba(229, 56, 59, 0.5);
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+
+        /* -------------------------------------------
+           Mobile Layout (หน้าจอเล็กให้ปัดเลื่อนซ้ายขวา)
+        ------------------------------------------- */
+        @media (max-width: 992px) {
+            #guru-container { 
+                display: flex; 
+                flex-wrap: nowrap; 
+                overflow-x: auto; 
+                padding-bottom: 20px; 
+                scroll-snap-type: x mandatory; /* ดูดการ์ดเข้าล็อก */
+                -webkit-overflow-scrolling: touch; 
+            }
+            .guru-card { 
+                min-width: 310px; /* ขนาดการ์ดกำลังดีในมือถือ */
+                flex: 0 0 auto; 
+                scroll-snap-align: start; 
+            }
+            /* ซ่อน Scrollbar ให้ดูคลีน */
+            #guru-container::-webkit-scrollbar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="guru-container"></div>
 
     <script>
         const DB_URL = "https://pcrurldhpubyznrdackb.supabase.co/rest/v1/wb_gurus_pro";
         const API_KEY = "sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0";
 
-        fetch(DB_URL, { headers: { 'apikey': API_KEY, 'Authorization': 'Bearer ' + API_KEY } })
+        fetch(DB_URL + "?select=*", { 
+            headers: { 'apikey': API_KEY, 'Authorization': 'Bearer ' + API_KEY } 
+        })
         .then(r => r.json())
         .then(data => {
             if(!data || data.length === 0) return;
-            const gurus = data[data.length - 1].gurus_list || [];
+            
+            const latestData = data.sort((a,b) => b.id - a.id)[0];
+            const gurus = latestData.gurus_list || [];
             
             document.getElementById("guru-container").innerHTML = gurus.map(g => `
-                <div style="background:#0c0c0c; border:1px solid #C5A059; border-radius:12px; padding:15px; color:white; box-shadow:0 4px 15px rgba(0,0,0,0.5);">
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-                        <img src="${g.img}" style="width:45px; height:45px; border-radius:50%; border:2px solid #C5A059;">
-                        <div style="flex-grow:1;">
-                            <div style="font-weight:bold; font-size:14px;">${g.name}</div>
-                            <div style="font-size:10px; color:#C5A059; text-transform:uppercase;">${g.views || '100'} Views | ${g.percent || '80%'} Win</div>
+                <div class="guru-card">
+                    
+                    <div class="guru-header">
+                        <img src="${g.img}" class="guru-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4140/4140048.png'">
+                        <div class="guru-info">
+                            <div class="guru-name">${g.name}</div>
+                            <div class="guru-rate"><i class="fas fa-fire"></i> &nbsp;อัตราเข้าวิน: ${g.percent || '80%'}</div>
                         </div>
                     </div>
                     
-                    <div style="font-size:13px; font-weight:bold; color:#ccc; margin-bottom:8px;">⚽ ${g.match}</div>
-                    <div style="background:rgba(197, 160, 89, 0.1); border-left:3px solid #C5A059; padding:8px; font-size:12px; margin-bottom:10px;">
-                        🎯 <span style="font-weight:bold; color:#fff;">${g.pick}</span>
+                    <div class="match-text"><i class="far fa-futbol"></i> ${g.match}</div>
+                    
+                    <div class="pick-box">
+                        <div class="pick-label">ฟันธงทรรศนะ :</div>
+                        <div class="pick-value"><i class="fas fa-crosshairs"></i> ${g.pick}</div>
                     </div>
 
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #333; pt:10px;">
-                        <div style="font-size:10px; color:#888;">สถิติย้อนหลัง</div>
-                        <div style="font-size:12px;">${renderStats(g.stats)}</div>
+                    <div class="stats-row">
+                        <div class="stats-label">สถิติ 5 นัดหลังสุด</div>
+                        <div class="stats-icons">${renderStats(g.record || g.stats)}</div>
                     </div>
+
+                    <a href="#" class="btn-analysis">
+                        <i class="fas fa-search-plus"></i> ดูบทวิเคราะห์เซียน
+                    </a>
+
                 </div>
             `).join("");
-        });
+        })
+        .catch(err => console.error("Error loading gurus:", err));
 
         function renderStats(stats) {
-            const arr = Array.isArray(stats) ? stats : (stats || "").split(',');
-            return arr.map(s => s === 'W' ? '✅' : s === 'L' ? '❌' : '➖').join(' ');
+            if (!stats) return '✅ ✅ ✅ ➖ ❌'; 
+            const arr = Array.isArray(stats) ? stats : stats.split(',');
+            return arr.map(s => {
+                const val = s.trim().toUpperCase();
+                if(val === 'W' || val === 'WIN') return '✅';
+                if(val === 'L' || val === 'LOSE') return '❌';
+                return '➖'; 
+            }).join(' ');
         }
     </script>
+
 </body>
 </html>
