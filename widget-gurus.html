@@ -10,20 +10,19 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body { 
-    background: #0a0a0a; 
+    background: transparent; /* เปลี่ยนพื้นหลังเป็นโปร่งใส เพื่อให้กลืนกับเว็บหลัก */
     font-family: 'Prompt', sans-serif; 
-    /* ลด Padding รอบนอกลง เพื่อไม่ให้กินพื้นที่เว็บหลักมากไป */
     padding: 10px; 
     color: #fff; 
 }
 
 #guru-container { 
     display: grid; 
-    grid-template-columns: repeat(3, 1fr); /* บังคับ 3 คอลัมน์บน PC */
-    gap: 12px; /* จัดช่องไฟให้พอดี ไม่ห่างเกินไป */
-    max-width: 1200px; /* ขนาดกว้างสุดที่ดูสวยงาม */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 12px; 
+    max-width: 1200px; 
     margin: 0 auto; 
-    align-items: stretch; /* บังคับให้การ์ดทุกใบในแถวมีความสูงเท่ากันเสมอ */
+    align-items: stretch; 
 }
 
 .guru-card { 
@@ -34,7 +33,7 @@ body {
     transition: all .3s; 
     display: flex; 
     flex-direction: column; 
-    height: 100%; /* ให้การ์ดยืดเต็มพื้นที่ของ Grid */
+    height: 100%; 
 }
 
 .guru-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,.5); }
@@ -76,7 +75,6 @@ body {
 .match-league { color: rgba(255,255,255,.6); font-size: .75rem; margin-bottom: 4px; }
 .match-teams { color: #fff; font-weight: 500; line-height: 1.4; }
 
-/* ดันส่วนนี้ให้ชิดขอบล่างเสมอ ทำให้การ์ดเป็นระเบียบ */
 .pick-section { margin-top: auto; background: rgba(0,0,0,.3); border-radius: 8px; padding: 12px; }
 .pick-label { font-size: .75rem; color: rgba(255,255,255,.6); margin-bottom: 6px; }
 .pick-value { font-size: .95rem; font-weight: 600; color: #fbbf24; display: flex; align-items: center; gap: 6px; }
@@ -89,7 +87,6 @@ body {
 .state-box { grid-column: 1/-1; text-align: center; padding: 40px; color: #9ca3af; }
 .state-box i { font-size: 2rem; margin-bottom: 10px; }
 
-/* Responsive */
 @media(max-width: 1024px) { 
     #guru-container { grid-template-columns: repeat(2, 1fr); } 
 }
@@ -175,10 +172,8 @@ function createCard(g, index){
     `;
 }
 
-// ฟังก์ชันส่งความสูงไปให้เว็บหลัก (เพื่อให้ iframe ยืดตามจำนวนการ์ดอัตโนมัติ)
 function sendHeightToParent() {
     if (window.parent) {
-        // บวกเผื่อพื้นที่เงาด้านล่างการ์ดเล็กน้อย
         const height = document.body.scrollHeight + 10; 
         window.parent.postMessage({ type: 'resize', height: height }, '*');
     }
@@ -202,8 +197,6 @@ async function loadData(){
         }
         
         container.innerHTML=gurus.map((g,i)=>createCard(g,i)).join('');
-        
-        // เมื่อเรนเดอร์การ์ดเสร็จแล้ว ให้ส่งความสูงใหม่ไปบอกหน้าเว็บหลัก
         setTimeout(sendHeightToParent, 100);
 
     }catch(err){
@@ -215,8 +208,6 @@ async function loadData(){
 
 loadData();
 setInterval(loadData,30000);
-
-// ส่งความสูงอีกครั้งเวลาผู้ใช้ย่อ/ขยายหน้าจอ
 window.addEventListener('resize', sendHeightToParent);
 </script>
 </body>
