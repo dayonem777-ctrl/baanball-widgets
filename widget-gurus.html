@@ -1,367 +1,159 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Widget - ทีเด็ดเซียน VIP Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background: #0a0a0a;
-            font-family: 'Prompt', sans-serif;
-            padding: 20px;
-            color: #ffffff;
-        }
-
-        #guru-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .guru-card {
-            border-radius: 12px;
-            padding: 16px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            min-height: 280px;
-        }
-
-        .guru-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-        }
-
-        .card-red {
-            background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .card-blue {
-            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* Badge - เปลี่ยนเป็นด้านขวา */
-        .card-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;  /* เปลี่ยนจาก left เป็น right */
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            z-index: 2;
-        }
-
-        .badge-red {
-            background: rgba(220, 38, 38, 0.9);
-            color: white;
-        }
-
-        .badge-blue {
-            background: rgba(59, 130, 246, 0.9);
-            color: white;
-        }
-
-        .badge-green {
-            background: rgba(34, 197, 94, 0.9);
-            color: white;
-        }
-
-        .guru-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .guru-img {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.3);
-            object-fit: cover;
-        }
-
-        .guru-info { flex-grow: 1; }
-        .guru-name { 
-            font-weight: 600; 
-            font-size: 0.95rem; 
-            color: #fff; 
-            margin-bottom: 4px;
-        }
-        
-        .guru-stats {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-        }
-
-        .win-rate {
-            background: rgba(34, 197, 94, 0.2);
-            color: #4ade80;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .views {
-            color: rgba(255,255,255,0.7);
-        }
-
-        .stats-icons {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-
-        .stat-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: 700;
-        }
-
-        .stat-icon.win {
-            background: rgba(34, 197, 94, 0.3);
-            color: #4ade80;
-        }
-
-        .stat-icon.lose {
-            background: rgba(239, 68, 68, 0.3);
-            color: #f87171;
-        }
-
-        .stat-icon.draw {
-            background: rgba(148, 163, 184, 0.3);
-            color: #94a3b8;
-        }
-
-        .match-info {
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 12px;
-            font-size: 0.85rem;
-        }
-
-        .match-league {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.75rem;
-            margin-bottom: 4px;
-        }
-
-        .match-teams {
-            color: #fff;
-            font-weight: 500;
-            line-height: 1.4;
-        }
-
-        .pick-section {
-            margin-top: auto;
-            background: rgba(0,0,0,0.3);
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .pick-label {
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 6px;
-        }
-
-        .pick-value {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #fbbf24;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-analysis {
-            display: block;
-            width: 100%;
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-top: 12px;
-            transition: all 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-analysis:hover {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            transform: translateY(-2px);
-        }
-
-        .card-blue .btn-analysis {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        }
-
-        .card-blue .btn-analysis:hover {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-        }
-
-        .state-box {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 40px;
-            color: #9ca3af;
-        }
-        .state-box i { font-size: 2rem; margin-bottom: 10px; }
-
-        @media (max-width: 1024px) {
-            #guru-container { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 640px) {
-            #guru-container {
-                display: flex;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                padding-bottom: 20px;
-                scroll-snap-type: x mandatory;
-            }
-            .guru-card { min-width: 300px; flex: 0 0 auto; scroll-snap-align: start; }
-            #guru-container::-webkit-scrollbar { display: none; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Widget - ทีเด็ดเซียน VIP Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0a;font-family:'Prompt',sans-serif;padding:20px;color:#fff}
+#guru-container{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;max-width:1400px;margin:0 auto}
+.guru-card{border-radius:12px;padding:16px;position:relative;overflow:hidden;transition:all .3s;display:flex;flex-direction:column;min-height:280px}
+.guru-card:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,.5)}
+.card-red{background:linear-gradient(135deg,#991b1b 0%,#7f1d1d 100%);border:1px solid rgba(255,215,0,.3);box-shadow:0 0 20px rgba(220,38,38,.2)}
+.card-blue{background:linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%);border:1px solid rgba(255,255,255,.1)}
+.card-badge{position:absolute;top:12px;right:12px;padding:5px 12px;border-radius:20px;font-size:.75rem;font-weight:700;display:flex;align-items:center;gap:6px;z-index:2;letter-spacing:.5px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+/* ระดับ 1 - VIP 👑 พื้นแดง ขอบทอง */
+.badge-vip{background:linear-gradient(135deg,#7f1d1d,#991b1b);color:#FFD700;border:1.5px solid #FFD700;text-shadow:0 0 6px rgba(255,215,0,.5)}
+.badge-vip i{color:#FFD700;filter:drop-shadow(0 0 4px rgba(255,215,0,.8))}
+/* ระดับ 2 - GOLD 💎 พื้นน้ำเงิน-เขียว */
+.badge-gold{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border:1.5px solid rgba(255,255,255,.3)}
+.badge-gold i{color:#93c5fd}
+/* ระดับ 3 - SILVER ⭐ พื้นซิวเวอร์ */
+.badge-silver{background:linear-gradient(135deg,#64748b,#94a3b8);color:#fff;border:1.5px solid rgba(255,255,255,.3)}
+.badge-silver i{color:#fef3c7}
+.guru-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.guru-img{width:48px;height:48px;border-radius:50%;border:2px solid rgba(255,255,255,.3);object-fit:cover}
+.card-red .guru-img{border-color:#FFD700;box-shadow:0 0 12px rgba(255,215,0,.4)}
+.guru-info{flex-grow:1}
+.guru-name{font-weight:600;font-size:.95rem;color:#fff;margin-bottom:4px}
+.guru-stats{display:flex;align-items:center;gap:8px;font-size:.8rem}
+.win-rate{background:rgba(34,197,94,.2);color:#4ade80;padding:2px 8px;border-radius:12px;font-weight:600;display:flex;align-items:center;gap:4px}
+.views{color:rgba(255,255,255,.7)}
+.stats-icons{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+.stat-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700}
+.stat-icon.win{background:rgba(34,197,94,.3);color:#4ade80}
+.stat-icon.lose{background:rgba(239,68,68,.3);color:#f87171}
+.stat-icon.draw{background:rgba(148,163,184,.3);color:#94a3b8}
+.match-info{background:rgba(0,0,0,.2);border-radius:8px;padding:10px;margin-bottom:12px;font-size:.85rem}
+.match-league{color:rgba(255,255,255,.6);font-size:.75rem;margin-bottom:4px}
+.match-teams{color:#fff;font-weight:500;line-height:1.4}
+.pick-section{margin-top:auto;background:rgba(0,0,0,.3);border-radius:8px;padding:12px}
+.pick-label{font-size:.75rem;color:rgba(255,255,255,.6);margin-bottom:6px}
+.pick-value{font-size:.95rem;font-weight:600;color:#fbbf24;display:flex;align-items:center;gap:6px}
+.btn-analysis{display:block;width:100%;background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;text-align:center;padding:10px;border-radius:8px;text-decoration:none;font-weight:600;font-size:.85rem;margin-top:12px;transition:all .3s;border:none;cursor:pointer}
+.btn-analysis:hover{background:linear-gradient(135deg,#ef4444,#dc2626);transform:translateY(-2px)}
+.card-blue .btn-analysis{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
+.card-blue .btn-analysis:hover{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+.state-box{grid-column:1/-1;text-align:center;padding:40px;color:#9ca3af}
+.state-box i{font-size:2rem;margin-bottom:10px}
+@media(max-width:1024px){#guru-container{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){#guru-container{display:flex;flex-wrap:nowrap;overflow-x:auto;padding-bottom:20px;scroll-snap-type:x mandatory}.guru-card{min-width:300px;flex:0 0 auto;scroll-snap-align:start}#guru-container::-webkit-scrollbar{display:none}}
+</style>
 </head>
 <body>
+<div id="guru-container">
+<div class="state-box"><i class="fas fa-spinner fa-spin" style="color:#fbbf24"></i><div>กำลังโหลดทีเด็ดเซียน...</div></div>
+</div>
+<script>
+const DB_URL="https://pcrurldhpubyznrdackb.supabase.co/rest/v1/wb_gurus_pro";
+const API_KEY="sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0";
+const container=document.getElementById("guru-container");
 
-    <div id="guru-container">
-        <div class="state-box">
-            <i class="fas fa-spinner fa-spin" style="color: #fbbf24;"></i>
-            <div>กำลังโหลดทีเด็ดเซียน...</div>
-        </div>
-    </div>
+function renderStats(stats){
+if(!stats)return'';
+const arr=Array.isArray(stats)?stats:stats.toString().split(',');
+return arr.slice(0,8).map(s=>{
+const v=s.trim().toUpperCase();
+let cls='draw',txt='-';
+if(['W','WIN','1','✓'].includes(v)){cls='win';txt='✓';}
+else if(['L','LOSE','0','✗'].includes(v)){cls='lose';txt='✗';}
+return`<div class="stat-icon ${cls}">${txt}</div>`;
+}).join('');
+}
 
-    <script>
-        const DB_URL = "https://pcrurldhpubyznrdackb.supabase.co/rest/v1/wb_gurus_pro";
-        const API_KEY = "sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0";
-        const container = document.getElementById("guru-container");
+/* ===============================
+   เกณฑ์อัตโนมัติ 3 ระดับ (ใหม่)
+   ดูจาก % อัตราชนะเพียงอย่างเดียว
+================================ */
+function getCardType(percent){
+if(percent >= 85) return 'card-red';   // 🔴 ระดับ 1 VIP
+return 'card-blue';                     // 🔵 ระดับ 2, 3
+}
 
-        function renderStats(stats) {
-            if (!stats) return '';
-            const arr = Array.isArray(stats) ? stats : stats.toString().split(',');
-            return arr.slice(0, 8).map(s => {
-                const v = s.trim().toUpperCase();
-                let cls = 'draw', txt = '-';
-                if (['W', 'WIN', '1', '✓'].includes(v)) { cls = 'win'; txt = '✓'; }
-                else if (['L', 'LOSE', '0', '✗'].includes(v)) { cls = 'lose'; txt = '✗'; }
-                return `<div class="stat-icon ${cls}">${txt}</div>`;
-            }).join('');
-        }
+function getBadge(percent){
+if(percent >= 85){
+return '<div class="card-badge badge-vip"><i class="fas fa-crown"></i> VIP</div>';
+}else if(percent >= 60){
+return '<div class="card-badge badge-gold"><i class="fas fa-gem"></i> GOLD</div>';
+}else{
+return '<div class="card-badge badge-silver"><i class="fas fa-star"></i> SILVER</div>';
+}
+}
 
-        function getCardType(index, percent) {
-            if (index < 3 && percent >= 80) return 'card-red';
-            return 'card-blue';
-        }
+function createCard(g){
+const img=g.img||'https://cdn-icons-png.flaticon.com/512/4140/4140048.png';
+const name=g.name||'เซียนบอล';
+const percent=parseInt(g.percent||g.winRate||80);
+const views=g.views||0;
+const match=g.match||'ไม่มีข้อมูลแมตช์';
+const league=g.league||'ฟุตบอลโลก 2026';
+const pick=g.pick||g.prediction||'รอวิเคราะห์';
+const stats=g.record||g.stats||g.history||'';
+const cardClass=getCardType(percent);
 
-        function getBadge(percent) {
-            if (percent >= 85) return '<div class="card-badge badge-red"><i class="fas fa-crown"></i> VIP</div>';
-            if (percent >= 70) return '<div class="card-badge badge-blue"><i class="fas fa-star"></i> Premium</div>';
-            return '<div class="card-badge badge-green"><i class="fas fa-check"></i> Standard</div>';
-        }
+return`
+<div class="guru-card ${cardClass}">
+${getBadge(percent)}
+<div class="guru-header">
+<img src="${img}" class="guru-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4140/4140048.png'">
+<div class="guru-info">
+<div class="guru-name">${name}</div>
+<div class="guru-stats">
+<div class="win-rate"><i class="fas fa-check"></i> ${percent}%</div>
+<div class="views"><i class="fas fa-eye"></i> ${views} views</div>
+</div>
+</div>
+</div>
+<div class="stats-icons">${renderStats(stats)}</div>
+<div class="match-info">
+<div class="match-league"><i class="fas fa-trophy"></i> ${league}</div>
+<div class="match-teams">${match}</div>
+</div>
+<div class="pick-section">
+<div class="pick-label">ทีเด็ดวันนี้ ⭐</div>
+<div class="pick-value"><i class="fas fa-crosshairs"></i> ${pick}</div>
+</div>
+<a href="#" class="btn-analysis"><i class="fas fa-search"></i> ดูบทวิเคราะห์</a>
+</div>
+`;
+}
 
-        function createCard(g, index) {
-            const img = g.img || 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png';
-            const name = g.name || 'เซียนบอล';
-            const percent = parseInt(g.percent || g.winRate || 80);
-            const views = g.views || 0;
-            const match = g.match || 'ไม่มีข้อมูลแมตช์';
-            const league = g.league || 'ฟุตบอลโลก 2026';
-            const pick = g.pick || g.prediction || 'รอวิเคราะห์';
-            const stats = g.record || g.stats || g.history || '';
-            const cardClass = getCardType(index, percent);
+async function loadData(){
+try{
+const res=await fetch(DB_URL+"?select=*",{headers:{'apikey':API_KEY,'Authorization':'Bearer '+API_KEY}});
+const data=await res.json();
+let gurus=[];
+if(Array.isArray(data)){
+const latest=data.sort((a,b)=>(b.id||0)-(a.id||0))[0];
+gurus=latest?.gurus_list||data;
+}else if(data?.gurus_list){gurus=data.gurus_list;}
+else if(data?.data){gurus=data.data;}
+if(!Array.isArray(gurus)||gurus.length===0){
+container.innerHTML='<div class="state-box"><i class="fas fa-inbox"></i><div>ยังไม่มีทีเด็ดในขณะนี้</div></div>';
+return;
+}
+container.innerHTML=gurus.map(g=>createCard(g)).join('');
+}catch(err){
+console.error("Error:",err);
+container.innerHTML='<div class="state-box"><i class="fas fa-exclamation-triangle" style="color:#ef4444"></i><div>ไม่สามารถโหลดข้อมูลได้</div></div>';
+}
+}
 
-            return `
-                <div class="guru-card ${cardClass}">
-                    ${getBadge(percent)}
-                    <div class="guru-header">
-                        <img src="${img}" class="guru-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4140/4140048.png'">
-                        <div class="guru-info">
-                            <div class="guru-name">${name}</div>
-                            <div class="guru-stats">
-                                <div class="win-rate"><i class="fas fa-check"></i> ${percent}%</div>
-                                <div class="views"><i class="fas fa-eye"></i> ${views} views</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stats-icons">${renderStats(stats)}</div>
-                    <div class="match-info">
-                        <div class="match-league"><i class="fas fa-trophy"></i> ${league}</div>
-                        <div class="match-teams">${match}</div>
-                    </div>
-                    <div class="pick-section">
-                        <div class="pick-label">ทีเด็ดวันนี้ ⭐</div>
-                        <div class="pick-value"><i class="fas fa-crosshairs"></i> ${pick}</div>
-                    </div>
-                    <a href="#" class="btn-analysis">
-                        <i class="fas fa-search"></i> ดูบทวิเคราะห์
-                    </a>
-                </div>
-            `;
-        }
-
-        async function loadData() {
-            try {
-                const res = await fetch(DB_URL + "?select=*", {
-                    headers: { 'apikey': API_KEY, 'Authorization': 'Bearer ' + API_KEY }
-                });
-                const data = await res.json();
-                
-                let gurus = [];
-                if (Array.isArray(data)) {
-                    const latest = data.sort((a, b) => (b.id || 0) - (a.id || 0))[0];
-                    gurus = latest?.gurus_list || data;
-                } else if (data?.gurus_list) {
-                    gurus = data.gurus_list;
-                } else if (data?.data) {
-                    gurus = data.data;
-                }
-
-                if (!Array.isArray(gurus) || gurus.length === 0) {
-                    container.innerHTML = '<div class="state-box"><i class="fas fa-inbox"></i><div>ยังไม่มีทีเด็ดในขณะนี้</div></div>';
-                    return;
-                }
-
-                container.innerHTML = gurus.map((g, i) => createCard(g, i)).join('');
-            } catch (err) {
-                console.error("Error:", err);
-                container.innerHTML = '<div class="state-box"><i class="fas fa-exclamation-triangle" style="color:#ef4444;"></i><div>ไม่สามารถโหลดข้อมูลได้</div></div>';
-            }
-        }
-
-        loadData();
-        setInterval(loadData, 30000);
-    </script>
-
+loadData();
+setInterval(loadData,30000);
+</script>
 </body>
 </html>
