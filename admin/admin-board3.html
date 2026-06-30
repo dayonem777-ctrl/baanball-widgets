@@ -14,14 +14,13 @@
 
     <div class="admin-container">
         
-        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h1 class="logo-text">TOPFORM<span class="gold-text">369</span></h1>
                 <p class="subtitle">Master Panel</p>
             </div>
             <nav class="sidebar-nav">
-                <a href="index.html" class="nav-item"><i class="fas fa-th-large"></i> แดชบอร์ด</a>
+                <a href="../index.html" class="nav-item"><i class="fas fa-th-large"></i> แดชบอร์ด</a>
                 <div class="nav-divider">จัดการบอร์ด</div>
                 <a href="admin-board1.html" class="nav-item"><i class="fas fa-flag"></i> จัดการบอร์ด Hero</a>
                 <a href="admin-board2.html" class="nav-item"><i class="fas fa-star"></i> จัดการบอร์ด เซียน VIP</a>
@@ -31,18 +30,16 @@
             </nav>
         </aside>
 
-        <!-- MAIN CONTENT -->
         <div class="main-content">
             <header class="topbar">
                 <h2 class="page-title">🏆 จัดการบอร์ด 3 : โปรแกรมฟุตบอลโลก 2026</h2>
                 <div class="topbar-actions">
-                    <a href="../widget-hero.html" target="_blank" class="btn btn-outline"><i class="fas fa-eye"></i> ดูบอร์ดนี้บนเว็บ</a>
+                    <a href="../widget-worldcup.html" target="_blank" class="btn btn-outline"><i class="fas fa-eye"></i> ดูบอร์ดนี้บนเว็บ</a>
                 </div>
             </header>
 
             <main class="content-wrapper">
                 
-                <!-- ตั้งค่าข้อความหัวบอร์ดและเวลานับถอยหลัง -->
                 <div class="action-section mb-4">
                     <input type="hidden" id="bid-3">
                     <h4 class="text-warning mb-3"><i class="fas fa-sliders-h me-2"></i>ข้อความป้ายหัวข้อ & เวลานับถอยหลัง</h4>
@@ -58,14 +55,12 @@
                     </div>
                 </div>
 
-                <!-- ตั้งค่าโค้ด Iframe ตารางคะแนน -->
                 <div class="action-section mb-4" style="border-color: #38bdf8;">
                     <h4 class="text-info mb-2"><i class="fas fa-code me-2"></i>โค้ด Iframe ตารางคะแนน (แสดงผลเมื่อผู้ใช้งานกดปุ่ม "ดูโปรแกรมทั้งหมด")</h4>
                     <p class="text-muted text-xs mb-3">วางโค้ดวิดเจ็ตจาก 365Scores ลงในช่องนี้ ระบบจะแสดงผลเป็นหน้าต่าง Pop-up บนเว็บทันที</p>
                     <textarea id="wc-iframe" class="form-control font-monospace" style="height:100px;" placeholder='<div data-widget-type="entityScores"...></script>'></textarea>
                 </div>
 
-                <!-- ฟอร์มเพิ่ม/แก้ไขการ์ดแมตช์ -->
                 <div class="action-section mb-4" style="border-color: rgba(212, 175, 55, 0.4);">
                     <h4 class="text-warning mb-3"><i class="fas fa-plus-circle me-2"></i>ฟอร์มเพิ่มการ์ดแมตช์แข่งขันลงในกริ้ด</h4>
                     <input type="hidden" id="wc-edit-idx" value="-1">
@@ -88,7 +83,6 @@
                     </div>
                 </div>
 
-                <!-- รายการแสดงคู่การแข่งขัน -->
                 <div class="action-section">
                     <h4 class="text-warning mb-3">📋 รายการแมตช์ที่จะโชว์บนหน้าเว็บ (<span id="wc-cnt">0</span> แมตช์)</h4>
                     <div id="wc-list-render" class="mb-4"></div>
