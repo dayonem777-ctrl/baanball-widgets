@@ -1,193 +1,489 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hero Board Widget</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
-        body, html { background: transparent; width: 100%; overflow-x: hidden; }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Prompt", sans-serif;
+      }
+      body,
+      html {
+        background: transparent;
+        width: 100%;
+        overflow-x: hidden;
+      }
 
-        .widget-card {
-            width: 100%; max-width: 960px; margin: 0 auto; background: #ffffff;
-            border-radius: 12px; padding: 18px 18px 24px 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.1);
-            border: 1px solid #e5e7eb; position: relative; overflow: hidden;
+      .widget-card {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 18px 18px 24px 18px;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .board-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        position: relative;
+        height: 165px;
+        margin-bottom: 18px;
+        border-bottom: 1px solid #f3f4f6;
+        padding-bottom: 8px;
+      }
+      @media (max-width: 600px) {
+        .board-top {
+          height: 125px;
         }
+      }
 
-        .board-top { display: flex; justify-content: space-between; align-items: flex-end; position: relative; height: 165px; margin-bottom: 18px; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; }
-        @media (max-width: 600px) { .board-top { height: 125px; } }
+      .team-box {
+        width: 42%;
+        display: flex;
+        align-items: center;
+        position: relative;
+        height: 100%;
+      }
+      .team-box.right {
+        flex-direction: row-reverse;
+      }
 
-        .team-box { width: 42%; display: flex; align-items: center; position: relative; height: 100%; }
-        .team-box.right { flex-direction: row-reverse; }
+      /* ปรับขนาดธงให้ใหญ่ขึ้นและดูมีมิติมากขึ้น */
+      .flag {
+        width: 84px;
+        height: 56px;
+        object-fit: cover;
+        border-radius: 6px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+        z-index: 10;
+        background: #eee;
+        border: 1px solid #e5e7eb;
+      }
+      @media (max-width: 600px) {
+        .flag {
+          width: 56px;
+          height: 38px;
+        }
+      }
 
-        .flag { width: 68px; height: 46px; object-fit: cover; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); z-index: 10; background: #eee; }
-        @media (max-width: 600px) { .flag { width: 44px; height: 30px; } }
+      .ribbon {
+        height: 42px;
+        width: 100%;
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+      }
+      @media (max-width: 600px) {
+        .ribbon {
+          font-size: 0.85rem;
+          height: 32px;
+        }
+      }
 
-        .ribbon { height: 42px; width: 100%; color: #fff; font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; position: relative; z-index: 2; text-shadow: 1px 1px 2px rgba(0,0,0,0.4); }
-        @media (max-width: 600px) { .ribbon { font-size: 0.85rem; height: 32px; } }
-        
-        .ribbon.left { clip-path: polygon(0 0, 92% 0, 100% 100%, 0 100%); padding-left: 15px; margin-left: -8px; }
-        .ribbon.right { clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%); padding-right: 15px; margin-left: -8px; justify-content: flex-end; }
+      .ribbon.left {
+        clip-path: polygon(0 0, 92% 0, 100% 100%, 0 100%);
+        padding-left: 15px;
+        margin-left: -10px;
+      }
+      .ribbon.right {
+        clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
+        padding-right: 15px;
+        margin-left: -10px;
+        justify-content: flex-end;
+      }
 
-        .player { position: absolute; bottom: 0; height: 155px; z-index: 6; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25)); pointer-events: none; }
-        @media (max-width: 600px) { .player { height: 110px; } }
-        .player.left { right: 3%; } .player.right { left: 3%; transform: scaleX(-1); }
+      .player {
+        position: absolute;
+        bottom: 0;
+        height: 155px;
+        z-index: 6;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
+        pointer-events: none;
+      }
+      @media (max-width: 600px) {
+        .player {
+          height: 110px;
+        }
+      }
+      .player.left {
+        right: 3%;
+      }
+      .player.right {
+        left: 3%;
+        transform: scaleX(-1);
+      }
 
-        .center-meta { position: absolute; left: 50%; bottom: 5px; transform: translateX(-50%); text-align: center; z-index: 15; width: 160px; }
-        .cup { width: 42px; margin-bottom: 2px; } @media (max-width: 600px) { .cup { width: 28px; } }
-        .m-title { font-size: 0.75rem; font-weight: 700; color: #555; line-height: 1.2; margin-bottom: 4px; }
-        @media (max-width: 600px) { .m-title { font-size: 0.6rem; } }
-        
-        .vs-badge { background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%); color: #1e293b; font-size: 2.1rem; font-weight: 900; font-style: italic; padding: 0 18px; clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%); display: inline-block; }
-        @media (max-width: 600px) { .vs-badge { font-size: 1.35rem; padding: 0 12px; } }
+      .center-meta {
+        position: absolute;
+        left: 50%;
+        bottom: 5px;
+        transform: translateX(-50%);
+        text-align: center;
+        z-index: 15;
+        width: 160px;
+      }
+      .cup {
+        width: 42px;
+        margin-bottom: 2px;
+      }
+      @media (max-width: 600px) {
+        .cup {
+          width: 28px;
+        }
+      }
+      .m-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #555;
+        line-height: 1.2;
+        margin-bottom: 4px;
+      }
+      @media (max-width: 600px) {
+        .m-title {
+          font-size: 0.6rem;
+        }
+      }
 
-        .stat-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 0.98rem; margin-bottom: 5px; }
-        @media (max-width: 600px) { .stat-head { font-size: 0.75rem; } }
-        
-        .track { height: 16px; background: #e9ecef; display: flex; width: 100%; border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
-        @media (max-width: 600px) { .track { height: 12px; } }
-        .fill { height: 100%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+      .vs-badge {
+        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        color: #1e293b;
+        font-size: 2.1rem;
+        font-weight: 900;
+        font-style: italic;
+        padding: 0 18px;
+        clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%);
+        display: inline-block;
+      }
+      @media (max-width: 600px) {
+        .vs-badge {
+          font-size: 1.35rem;
+          padding: 0 12px;
+        }
+      }
 
-        .vote-actions { display: flex; justify-content: center; align-items: center; gap: 15px; font-weight: 700; font-size: 0.9rem; color: #333; margin-bottom: 4px; }
-        @media (max-width: 600px) { .vote-actions { font-size: 0.75rem; gap: 10px; } }
-        
-        .btn-vote { background: #A81B30; color: #fff; border: none; padding: 5px 22px; border-radius: 50px; font-weight: 800; cursor: pointer; box-shadow: 0 3px 10px rgba(168,27,48,0.3); font-size: inherit; transition: 0.2s;}
-        .btn-vote:hover:not(:disabled) { background: #871324; transform: scale(1.04); }
-        
-        .btn-vote:disabled { background: #64748B; color: #E2E8F0; cursor: not-allowed; box-shadow: none; transform: none; opacity: 0.8; }
-        .sub-hint { font-size: 0.72rem; color: #94A3B8; text-align: center; font-weight: 500; margin-bottom: 16px; }
+      .stat-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 800;
+        font-size: 0.98rem;
+        margin-bottom: 5px;
+      }
+      @media (max-width: 600px) {
+        .stat-head {
+          font-size: 0.75rem;
+        }
+      }
+
+      .track {
+        height: 16px;
+        background: #e9ecef;
+        display: flex;
+        width: 100%;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 10px;
+      }
+      @media (max-width: 600px) {
+        .track {
+          height: 12px;
+        }
+      }
+      .fill {
+        height: 100%;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .vote-actions {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #333;
+        margin-bottom: 4px;
+      }
+      @media (max-width: 600px) {
+        .vote-actions {
+          font-size: 0.75rem;
+          gap: 10px;
+        }
+      }
+
+      .btn-vote {
+        background: #a81b30;
+        color: #fff;
+        border: none;
+        padding: 5px 22px;
+        border-radius: 50px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 3px 10px rgba(168, 27, 48, 0.3);
+        font-size: inherit;
+        transition: 0.2s;
+      }
+      .btn-vote:hover:not(:disabled) {
+        background: #871324;
+        transform: scale(1.04);
+      }
+
+      .btn-vote:disabled {
+        background: #64748b;
+        color: #e2e8f0;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+        opacity: 0.8;
+      }
+      .sub-hint {
+        font-size: 0.72rem;
+        color: #94a3b8;
+        text-align: center;
+        font-weight: 500;
+        margin-bottom: 16px;
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="widget-card" id="board-mount">
-        <p style="text-align:center; padding:40px; color:#aaa; font-size:0.9rem;">กำลังซิงค์ข้อมูลสถิติ...</p>
+      <p
+        style="
+          text-align: center;
+          padding: 40px;
+          color: #aaa;
+          font-size: 0.9rem;
+        "
+      >
+        กำลังซิงค์ข้อมูลสถิติ...
+      </p>
     </div>
 
     <script>
-        const DB_URL = 'https://pcrurldhpubyznrdackb.supabase.co/rest/v1/tbl_hero_board';
-        const API_KEY = 'sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0';
+      const DB_URL =
+        "https://pcrurldhpubyznrdackb.supabase.co/rest/v1/tbl_hero_board";
+      const API_KEY = "sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0";
 
-        let currentBoard = null;
+      let currentBoard = null;
 
-        const getMatchKey = (h, a) => `voted_m_${h.trim()}_vs_${a.trim()}`;
-        const getOuKey = (h, a) => `voted_ou_${h.trim()}_vs_${a.trim()}`;
+      const getMatchKey = (h, a) => `voted_m_${h.trim()}_vs_${a.trim()}`;
+      const getOuKey = (h, a) => `voted_ou_${h.trim()}_vs_${a.trim()}`;
 
-        async function fetchBoard() {
-            const mount = document.getElementById('board-mount');
-            try {
-                const res = await fetch(DB_URL, { headers: { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}` } });
-                const data = await res.json();
-                if(!data || data.length === 0) return;
+      async function fetchBoard() {
+        const mount = document.getElementById("board-mount");
+        try {
+          const res = await fetch(DB_URL, {
+            headers: { apikey: API_KEY, Authorization: `Bearer ${API_KEY}` },
+          });
+          const data = await res.json();
+          if (!data || data.length === 0) return;
 
-                const d = data[data.length - 1];
-                currentBoard = d;
+          const d = data[data.length - 1];
+          currentBoard = d;
 
-                const matchKey = getMatchKey(d.home_name, d.away_name);
-                const ouKey = getOuKey(d.home_name, d.away_name);
+          const matchKey = getMatchKey(d.home_name, d.away_name);
+          const ouKey = getOuKey(d.home_name, d.away_name);
 
-                const votedM = localStorage.getItem(matchKey);
-                const votedOU = localStorage.getItem(ouKey);
+          const votedM = localStorage.getItem(matchKey);
+          const votedOU = localStorage.getItem(ouKey);
 
-                const totalM = d.vote_home + d.vote_away;
-                const pH = totalM === 0 ? 50 : Math.round((d.vote_home / totalM) * 100);
-                const pA = totalM === 0 ? 50 : 100 - pH;
+          const totalM = d.vote_home + d.vote_away;
+          const pH =
+            totalM === 0 ? 50 : Math.round((d.vote_home / totalM) * 100);
+          const pA = totalM === 0 ? 50 : 100 - pH;
 
-                const totalOU = d.vote_under + d.vote_over;
-                const pU = totalOU === 0 ? 50 : Math.round((d.vote_under / totalOU) * 100);
-                const pO = totalOU === 0 ? 50 : 100 - pU;
+          const totalOU = d.vote_under + d.vote_over;
+          const pU =
+            totalOU === 0 ? 50 : Math.round((d.vote_under / totalOU) * 100);
+          const pO = totalOU === 0 ? 50 : 100 - pU;
 
-                const votedTeamName = votedM === 'h' ? d.home_name : (votedM === 'a' ? d.away_name : '');
-                const votedOUText = votedOU === 'u' ? 'ต่ำ' : (votedOU === 'o' ? 'สูง' : '');
+          const votedTeamName =
+            votedM === "h" ? d.home_name : votedM === "a" ? d.away_name : "";
+          const votedOUText =
+            votedOU === "u" ? "ต่ำ" : votedOU === "o" ? "สูง" : "";
 
-                mount.innerHTML = `
+          mount.innerHTML = `
                     <div class="board-top">
                         <div class="team-box">
                             <img src="${d.home_flag}" class="flag">
-                            <div class="ribbon left" style="background:${d.home_color};">${d.home_name}</div>
+                            <div class="ribbon left" style="background:${
+                              d.home_color
+                            };">${d.home_name}</div>
                             <img src="${d.home_player}" class="player left">
                         </div>
                         <div class="center-meta">
                             <img src="${d.league_logo}" class="cup">
-                            <div class="m-title">${d.league_name}<br><span>${d.match_time}</span></div>
+                            <div class="m-title">${d.league_name}<br><span>${
+            d.match_time
+          }</span></div>
                             <div class="vs-badge">VS</div>
                         </div>
                         <div class="team-box right">
                             <img src="${d.away_flag}" class="flag">
-                            <div class="ribbon right" style="background:${d.away_color};">${d.away_name}</div>
+                            <div class="ribbon right" style="background:${
+                              d.away_color
+                            };">${d.away_name}</div>
                             <img src="${d.away_player}" class="player right">
                         </div>
                     </div>
 
                     <div class="stat-head">
-                        <span style="color:${d.home_color};">${d.vote_home} โหวต (${pH}%)</span>
+                        <span style="color:${d.home_color};">${
+            d.vote_home
+          } โหวต (${pH}%)</span>
                         <span style="color:#111;">${d.odds_text}</span>
-                        <span style="color:${d.away_color};">${d.vote_away} โหวต (${pA}%)</span>
+                        <span style="color:${d.away_color};">${
+            d.vote_away
+          } โหวต (${pA}%)</span>
                     </div>
-                    <div class="track"><div class="fill" style="background:${d.home_color}; width:${pH}%;"></div><div class="fill" style="background:${d.away_color}; width:${pA}%;"></div></div>
+                    <div class="track"><div class="fill" style="background:${
+                      d.home_color
+                    }; width:${pH}%;"></div><div class="fill" style="background:${
+            d.away_color
+          }; width:${pA}%;"></div></div>
                     
                     <div class="vote-actions">
-                        <label><input type="radio" name="vm" value="h" ${votedM ? 'disabled' : ''} ${votedM === 'h' || !votedM ? 'checked' : ''}> ${d.home_name}</label>
-                        <label><input type="radio" name="vm" value="a" ${votedM ? 'disabled' : ''} ${votedM === 'a' ? 'checked' : ''}> ${d.away_name}</label>
-                        <button class="btn-vote" id="btn-m" onclick="castVote('match')" ${votedM ? 'disabled' : ''}>
-                            ${votedM ? '<i class="fas fa-check"></i> บันทึกแล้ว' : 'โหวตเชียร์'}
+                        <label><input type="radio" name="vm" value="h" ${
+                          votedM ? "disabled" : ""
+                        } ${votedM === "h" || !votedM ? "checked" : ""}> ${
+            d.home_name
+          }</label>
+                        <label><input type="radio" name="vm" value="a" ${
+                          votedM ? "disabled" : ""
+                        } ${votedM === "a" ? "checked" : ""}> ${
+            d.away_name
+          }</label>
+                        <button class="btn-vote" id="btn-m" onclick="castVote('match')" ${
+                          votedM ? "disabled" : ""
+                        }>
+                            ${
+                              votedM
+                                ? '<i class="fas fa-check"></i> บันทึกแล้ว'
+                                : "โหวตเชียร์"
+                            }
                         </button>
                     </div>
-                    <div class="sub-hint" style="${votedM ? 'color:#A81B30; font-weight:700;' : ''}">
-                        ${votedM ? 'คุณโหวตให้ "' + votedTeamName + '" แล้ว' : 'โอกาสชนะวิเคราะห์จากมหาชน'}
+                    <div class="sub-hint" style="${
+                      votedM ? "color:#A81B30; font-weight:700;" : ""
+                    }">
+                        ${
+                          votedM
+                            ? 'คุณโหวตให้ "' + votedTeamName + '" แล้ว'
+                            : "โอกาสชนะวิเคราะห์จากมหาชน"
+                        }
                     </div>
 
                     <div class="stat-head">
-                        <span style="color:#A81B30;">${d.vote_under} โหวต (${pU}%)</span>
+                        <span style="color:#A81B30;">${
+                          d.vote_under
+                        } โหวต (${pU}%)</span>
                         <span style="color:#111;">สกอร์ สูง / ต่ำ</span>
-                        <span style="color:#1D3557;">${d.vote_over} โหวต (${pO}%)</span>
+                        <span style="color:#1D3557;">${
+                          d.vote_over
+                        } โหวต (${pO}%)</span>
                     </div>
                     <div class="track"><div class="fill" style="background:#A81B30; width:${pU}%;"></div><div class="fill" style="background:#1D3557; width:${pO}%;"></div></div>
                     
                     <div class="vote-actions">
-                        <label><input type="radio" name="vou" value="u" ${votedOU ? 'disabled' : ''} ${votedOU === 'u' || !votedOU ? 'checked' : ''}> ต่ำ</label>
-                        <label><input type="radio" name="vou" value="o" ${votedOU ? 'disabled' : ''} ${votedOU === 'o' ? 'checked' : ''}> สูง</label>
-                        <button class="btn-vote" id="btn-ou" onclick="castVote('ou')" ${votedOU ? 'disabled' : ''}>
-                            ${votedOU ? '<i class="fas fa-check"></i> บันทึกแล้ว' : 'โหวตสกอร์'}
+                        <label><input type="radio" name="vou" value="u" ${
+                          votedOU ? "disabled" : ""
+                        } ${
+            votedOU === "u" || !votedOU ? "checked" : ""
+          }> ต่ำ</label>
+                        <label><input type="radio" name="vou" value="o" ${
+                          votedOU ? "disabled" : ""
+                        } ${votedOU === "o" ? "checked" : ""}> สูง</label>
+                        <button class="btn-vote" id="btn-ou" onclick="castVote('ou')" ${
+                          votedOU ? "disabled" : ""
+                        }>
+                            ${
+                              votedOU
+                                ? '<i class="fas fa-check"></i> บันทึกแล้ว'
+                                : "โหวตสกอร์"
+                            }
                         </button>
                     </div>
-                    <div class="sub-hint" style="margin-bottom:0; ${votedOU ? 'color:#1D3557; font-weight:700;' : ''}">
-                        ${votedOU ? 'คุณเลือกสกอร์ "' + votedOUText + '" แล้ว' : 'เลือกทรรศนะสกอร์รวมตลอดเกม'}
+                    <div class="sub-hint" style="margin-bottom:0; ${
+                      votedOU ? "color:#1D3557; font-weight:700;" : ""
+                    }">
+                        ${
+                          votedOU
+                            ? 'คุณเลือกสกอร์ "' + votedOUText + '" แล้ว'
+                            : "เลือกทรรศนะสกอร์รวมตลอดเกม"
+                        }
                     </div>
                 `;
-            } catch(e) { mount.innerHTML = `<p style="color:red; text-align:center;">ซิงค์ล้มเหลว: ${e.message}</p>`; }
+        } catch (e) {
+          mount.innerHTML = `<p style="color:red; text-align:center;">ซิงค์ล้มเหลว: ${e.message}</p>`;
+        }
+      }
+
+      async function castVote(type) {
+        if (!currentBoard) return;
+        const d = currentBoard;
+        const id = d.id;
+        const matchKey = getMatchKey(d.home_name, d.away_name);
+        const ouKey = getOuKey(d.home_name, d.away_name);
+
+        const url = `https://pcrurldhpubyznrdackb.supabase.co/rest/v1/tbl_hero_board?id=eq.${id}`;
+        const headers = {
+          apikey: API_KEY,
+          Authorization: `Bearer ${API_KEY}`,
+          "Content-Type": "application/json",
+        };
+
+        const r = await fetch(url, { headers });
+        const cur = (await r.json())[0];
+        let payload = {};
+
+        if (type === "match") {
+          const sel = document.querySelector('input[name="vm"]:checked').value;
+          payload =
+            sel === "h"
+              ? { vote_home: cur.vote_home + 1 }
+              : { vote_away: cur.vote_away + 1 };
+          localStorage.setItem(matchKey, sel);
+        } else {
+          const v = document.querySelector('input[name="vou"]:checked').value;
+          payload =
+            v === "u"
+              ? { vote_under: cur.vote_under + 1 }
+              : { vote_over: cur.vote_over + 1 };
+          localStorage.setItem(ouKey, v);
         }
 
-        async function castVote(type) {
-            if (!currentBoard) return;
-            const d = currentBoard;
-            const id = d.id;
-            const matchKey = getMatchKey(d.home_name, d.away_name);
-            const ouKey = getOuKey(d.home_name, d.away_name);
-
-            const url = `https://pcrurldhpubyznrdackb.supabase.co/rest/v1/tbl_hero_board?id=eq.${id}`;
-            const headers = { 'apikey': API_KEY, 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' };
-            
-            const r = await fetch(url, { headers }); const cur = (await r.json())[0];
-            let payload = {};
-
-            if(type === 'match') {
-                const sel = document.querySelector('input[name="vm"]:checked').value;
-                payload = sel === 'h' ? { vote_home: cur.vote_home + 1 } : { vote_away: cur.vote_away + 1 };
-                localStorage.setItem(matchKey, sel);
-            } else {
-                const v = document.querySelector('input[name="vou"]:checked').value;
-                payload = v === 'u' ? { vote_under: cur.vote_under + 1 } : { vote_over: cur.vote_over + 1 };
-                localStorage.setItem(ouKey, v);
-            }
-
-            await fetch(url, { method: 'PATCH', headers, body: JSON.stringify(payload) });
-            fetchBoard(); 
-        }
-
+        await fetch(url, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify(payload),
+        });
         fetchBoard();
+      }
+
+      fetchBoard();
     </script>
-</body>
+  </body>
 </html>
