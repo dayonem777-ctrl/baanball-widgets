@@ -34,24 +34,35 @@
         cursor: grabbing !important;
       }
 
+      /* บังคับความสูง Iframe ให้แสดงผลเสมอ */
+      #iframe-container iframe {
+        width: 100% !important;
+        min-height: 65vh !important; /* ความสูงขั้นต่ำ */
+        border: none !important;
+        border-radius: 8px;
+        background-color: #fff; /* กันพื้นหลังใสแล้วทะลุ */
+      }
+
       /* =========================================
          3D Liquid Glass Card (เอฟเฟกต์หยดน้ำนูน)
       ========================================= */
       .glass-card {
-        background: linear-gradient(135deg, rgba(28, 28, 30, 0.85) 0%, rgba(12, 12, 14, 0.95) 100%);
+        background: linear-gradient(
+          135deg,
+          rgba(28, 28, 30, 0.85) 0%,
+          rgba(12, 12, 14, 0.95) 100%
+        );
         border-top: 1px solid rgba(255, 255, 255, 0.15);
         border-left: 1px solid rgba(255, 255, 255, 0.1);
         border-right: 1px solid rgba(197, 160, 89, 0.15);
         border-bottom: 1px solid rgba(197, 160, 89, 0.1);
-        border-radius: 24px; /* โค้งมนแบบหยดน้ำ */
-        
-        /* มิติเงานูนเว้าแบบเลนส์ */
-        box-shadow: 
-            0 20px 40px rgba(0, 0, 0, 0.6),
-            inset 0 2px 4px rgba(255, 255, 255, 0.15),
-            inset 0 -4px 12px rgba(0, 0, 0, 0.6),
-            inset 0 0 15px rgba(212, 175, 55, 0.05);
-            
+        border-radius: 24px;
+
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6),
+          inset 0 2px 4px rgba(255, 255, 255, 0.15),
+          inset 0 -4px 12px rgba(0, 0, 0, 0.6),
+          inset 0 0 15px rgba(212, 175, 55, 0.05);
+
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
@@ -59,12 +70,18 @@
         overflow: hidden;
       }
 
-      /* แสงสะท้อนทรงโค้งวาบด้านบนการ์ด (Glossy Highlight) */
       .glass-card::after {
-        content: '';
+        content: "";
         position: absolute;
-        top: 0; left: 5%; width: 90%; height: 40%;
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 100%);
+        top: 0;
+        left: 5%;
+        width: 90%;
+        height: 40%;
+        background: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.06) 0%,
+          rgba(255, 255, 255, 0) 100%
+        );
         border-radius: 50% / 0 0 40% 40%;
         pointer-events: none;
       }
@@ -73,11 +90,10 @@
         transform: translateY(-8px) scale(1.02);
         border-top-color: rgba(255, 255, 255, 0.3);
         border-right-color: rgba(212, 175, 55, 0.5);
-        box-shadow: 
-            0 30px 50px rgba(0, 0, 0, 0.8),
-            0 0 25px rgba(212, 175, 55, 0.2),
-            inset 0 2px 6px rgba(255, 255, 255, 0.25),
-            inset 0 -2px 15px rgba(212, 175, 55, 0.05);
+        box-shadow: 0 30px 50px rgba(0, 0, 0, 0.8),
+          0 0 25px rgba(212, 175, 55, 0.2),
+          inset 0 2px 6px rgba(255, 255, 255, 0.25),
+          inset 0 -2px 15px rgba(212, 175, 55, 0.05);
       }
 
       /* =========================================
@@ -89,18 +105,16 @@
         border-top: 1px solid #ffffff;
         border-bottom: 1px solid #a1a1aa;
         border-radius: 12px;
-        box-shadow: 
-            0 6px 20px rgba(255, 255, 255, 0.1),
-            inset 0 3px 6px rgba(255, 255, 255, 0.8),
-            inset 0 -3px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 6px 20px rgba(255, 255, 255, 0.1),
+          inset 0 3px 6px rgba(255, 255, 255, 0.8),
+          inset 0 -3px 6px rgba(0, 0, 0, 0.1);
         transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
       }
       .btn-glass:hover {
         transform: translateY(-2px);
-        box-shadow: 
-            0 10px 25px rgba(255, 255, 255, 0.2),
-            inset 0 4px 8px rgba(255, 255, 255, 0.9),
-            inset 0 -4px 8px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2),
+          inset 0 4px 8px rgba(255, 255, 255, 0.9),
+          inset 0 -4px 8px rgba(0, 0, 0, 0.15);
       }
       .btn-glass:active {
         transform: translateY(1px);
@@ -120,12 +134,13 @@
       </div>
     </div>
 
+    <!-- Modal สำหรับ Iframe -->
     <div
       id="iframe-modal"
       class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center p-3 md:p-6"
     >
       <div
-        class="bg-[#121215] border border-zinc-700 w-full max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl"
+        class="bg-[#121215] border border-zinc-700 w-full max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl relative"
       >
         <div
           class="p-4 bg-[#1a1a1e] border-b border-zinc-800 flex justify-between items-center"
@@ -142,6 +157,8 @@
             ปิดหน้าต่าง X
           </button>
         </div>
+
+        <!-- จุดที่โหลด Iframe เข้ามา -->
         <div
           id="iframe-container"
           class="p-4 overflow-y-auto flex-grow bg-black/50 min-h-[400px]"
@@ -348,13 +365,25 @@
       function openModal() {
         const modal = document.getElementById("iframe-modal");
         const container = document.getElementById("iframe-container");
-        if (!storedIframeCode) {
-          alert("ยังไม่ได้ใส่โค้ด Iframe ในหน้าแอดมินครับ");
+
+        // เช็คว่ามีข้อมูล Iframe ส่งมาหรือไม่
+        if (!storedIframeCode || storedIframeCode.trim() === "") {
+          alert("ยังไม่ได้ใส่ข้อมูลลิงก์ Iframe ในระบบแอดมินครับ");
           return;
         }
-        modal.classList.remove("hidden");
-        container.innerHTML = storedIframeCode;
 
+        modal.classList.remove("hidden");
+
+        let finalHTML = storedIframeCode.trim();
+
+        // ถ้าระบบจับได้ว่าใส่มาแค่ลิงก์ (เช่น https://...) จะสร้าง iframe ครอบให้อัตโนมัติทันที
+        if (finalHTML.startsWith("http")) {
+          finalHTML = `<iframe src="${finalHTML}"></iframe>`;
+        }
+
+        container.innerHTML = finalHTML;
+
+        // รัน Script ต่างๆ ภายใน Iframe (ถ้ามี)
         const scripts = container.getElementsByTagName("script");
         for (let i = 0; i < scripts.length; i++) {
           const s = document.createElement("script");
