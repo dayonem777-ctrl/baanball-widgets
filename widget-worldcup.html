@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TOPFORM369</title>
+    <title></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap"
@@ -34,13 +34,17 @@
         cursor: grabbing !important;
       }
 
-      /* บังคับความสูง Iframe ให้แสดงผลเสมอ */
+      /* =========================================
+         บังคับขนาด Iframe ในป๊อปอัปให้เป็น 950x1200
+      ========================================= */
       #iframe-container iframe {
-        width: 100% !important;
-        min-height: 65vh !important; /* ความสูงขั้นต่ำ */
+        width: 950px !important; /* ล็อกความกว้าง 950px */
+        height: 1200px !important; /* ล็อกความสูง 1200px */
+        min-height: 1200px !important;
+        max-width: none !important; /* ป้องกันไม่ให้ Tailwind บีบขนาดในมือถือ */
         border: none !important;
         border-radius: 8px;
-        background-color: #fff; /* กันพื้นหลังใสแล้วทะลุ */
+        background-color: #fff;
       }
 
       /* =========================================
@@ -122,7 +126,8 @@
       }
     </style>
   </head>
-  <body class="bg-transparent p-4">
+  <!-- เอาคลาส p-4 (Padding) ออก และใส่ m-0 p-0 เพื่อไม่ให้มีกรอบใสส่วนเกินเวลาดึงไปใช้งาน -->
+  <body class="bg-transparent m-0 p-0">
     <div
       id="wc-mount"
       class="max-w-7xl mx-auto bg-[#09090b] text-white p-5 md:p-8 rounded-2xl border border-zinc-800 shadow-2xl relative overflow-hidden font-sans"
@@ -137,13 +142,14 @@
     <!-- Modal สำหรับ Iframe -->
     <div
       id="iframe-modal"
-      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center p-3 md:p-6"
+      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center p-2 md:p-6"
     >
+      <!-- ขยายกล่อง Modal ให้รองรับความกว้าง 950px ได้ -->
       <div
-        class="bg-[#121215] border border-zinc-700 w-full max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl relative"
+        class="bg-[#121215] border border-zinc-700 w-full max-w-[1000px] max-h-[95vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl relative"
       >
         <div
-          class="p-4 bg-[#1a1a1e] border-b border-zinc-800 flex justify-between items-center"
+          class="p-4 bg-[#1a1a1e] border-b border-zinc-800 flex justify-between items-center shrink-0"
         >
           <span
             class="font-bold text-[#D4AF37] flex items-center gap-2 text-sm"
@@ -158,10 +164,10 @@
           </button>
         </div>
 
-        <!-- จุดที่โหลด Iframe เข้ามา -->
+        <!-- จุดที่โหลด Iframe: เพิ่มระบบ overflow-auto ให้เลื่อนดูซ้าย-ขวาได้หากหน้าจอมือถือเล็กกว่า 950px -->
         <div
           id="iframe-container"
-          class="p-4 overflow-y-auto flex-grow bg-black/50 min-h-[400px]"
+          class="overflow-auto flex-grow bg-black/50"
         ></div>
       </div>
     </div>
