@@ -1,203 +1,423 @@
 <!DOCTYPE html>
 <html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TOPFORM369 - จัดการบอร์ด 3 (บอลโลก 2026)</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
     <div class="admin-container">
-        
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h1 class="logo-text">TOPFORM<span class="gold-text">369</span></h1>
-                <p class="subtitle">Master Panel</p>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="../index.html" class="nav-item"><i class="fas fa-th-large"></i> แดชบอร์ด</a>
-                <div class="nav-divider">จัดการบอร์ด</div>
-                <a href="admin-board1.html" class="nav-item"><i class="fas fa-flag"></i> จัดการบอร์ด Hero</a>
-                <a href="admin-board2.html" class="nav-item"><i class="fas fa-star"></i> จัดการบอร์ด เซียน VIP</a>
-                <a href="admin-board3.html" class="nav-item active"><i class="fas fa-trophy"></i> จัดการบอร์ด บอลโลก</a>
-                <div class="nav-divider">ระบบ</div>
-                <a href="#" class="nav-item"><i class="fas fa-cog"></i> ตั้งค่าเว็บ</a>
-            </nav>
-        </aside>
-
-        <div class="main-content">
-            <header class="topbar">
-                <h2 class="page-title">🏆 จัดการบอร์ด 3 : โปรแกรมฟุตบอลโลก 2026</h2>
-                <div class="topbar-actions">
-                    <a href="../widget-worldcup.html" target="_blank" class="btn btn-outline"><i class="fas fa-eye"></i> ดูบอร์ดนี้บนเว็บ</a>
-                </div>
-            </header>
-
-            <main class="content-wrapper">
-                
-                <div class="action-section mb-4">
-                    <input type="hidden" id="bid-3">
-                    <h4 class="text-warning mb-3"><i class="fas fa-sliders-h me-2"></i>ข้อความป้ายหัวข้อ & เวลานับถอยหลัง</h4>
-                    <div class="row g-3">
-                        <div class="col-md-6"><label class="text-warning">ป้ายหัวบนสุด (เช่น FIFA WORLD CUP 2026)</label><input type="text" id="wc-top" class="form-control fw-bold text-warning" value="FIFA WORLD CUP 2026"></div>
-                        <div class="col-md-6"><label>หัวข้อใหญ่หลัก</label><input type="text" id="wc-head" class="form-control fw-bold text-white" value="ฟุตบอลโลก 2026"></div>
-                        <div class="col-md-6"><label>ข้อความเน้น (สีขาว)</label><input type="text" id="wc-today" class="form-control" value="3 แมตช์วันนี้"></div>
-                        <div class="col-md-6"><label>ข้อความรอง (สีซิลเวอร์)</label><input type="text" id="wc-upcoming" class="form-control" value="13 แมตช์ที่กำลังจะมาถึง"></div>
-                        <div class="col-md-12">
-                            <label class="text-warning">วันเวลาเตะนัดถัดไป (สำหรับระบบนับถอยหลัง รูปแบบ: YYYY-MM-DD HH:MM:SS)</label>
-                            <input type="text" id="wc-target" class="form-control font-monospace text-warning fw-bold" placeholder="เช่น 2026-07-01 23:30:00" value="2026-07-01 00:00:00">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="action-section mb-4" style="border-color: #38bdf8;">
-                    <h4 class="text-info mb-2"><i class="fas fa-code me-2"></i>โค้ด Iframe ตารางคะแนน (แสดงผลเมื่อผู้ใช้งานกดปุ่ม "ดูโปรแกรมทั้งหมด")</h4>
-                    <p class="text-muted text-xs mb-3">วางโค้ดวิดเจ็ตจาก 365Scores ลงในช่องนี้ ระบบจะแสดงผลเป็นหน้าต่าง Pop-up บนเว็บทันที</p>
-                    <textarea id="wc-iframe" class="form-control font-monospace" style="height:100px;" placeholder='<div data-widget-type="entityScores"...></script>'></textarea>
-                </div>
-
-                <div class="action-section mb-4" style="border-color: rgba(212, 175, 55, 0.4);">
-                    <h4 class="text-warning mb-3"><i class="fas fa-plus-circle me-2"></i>ฟอร์มเพิ่มการ์ดแมตช์แข่งขันลงในกริ้ด</h4>
-                    <input type="hidden" id="wc-edit-idx" value="-1">
-                    <div class="row g-3">
-                        <div class="col-md-3"><label>วันที่แข่ง</label><input type="text" id="wm-date" class="form-control" placeholder="30 มิ.ย."></div>
-                        <div class="col-md-3"><label>ป้ายสถานะ (มุมขวาบน)</label><input type="text" id="wm-badge" class="form-control" placeholder="วันนี้"></div>
-                        <div class="col-md-3"><label>เวลาเตะ</label><input type="text" id="wm-time" class="form-control" placeholder="00:00 น."></div>
-                        <div class="col-md-3"><label>เซียนเลือกทีมเหย้ากี่เปอร์เซ็นต์ (%)</label><input type="number" id="wm-rate" class="form-control" placeholder="93" max="100"></div>
-
-                        <div class="col-md-3"><label>ชื่อทีมเหย้า (ซ้าย)</label><input type="text" id="wm-hn" class="form-control" placeholder="บราซิล"></div>
-                        <div class="col-md-3"><label>URL ธงทีมเหย้า</label><input type="text" id="wm-hf" class="form-control" placeholder="https://..."></div>
-                        <div class="col-md-3"><label>ชื่อทีมเยือน (ขวา)</label><input type="text" id="wm-an" class="form-control" placeholder="ญี่ปุ่น"></div>
-                        <div class="col-md-3"><label>URL ธงทีมเยือน</label><input type="text" id="wm-af" class="form-control" placeholder="https://..."></div>
-
-                        <div class="col-md-12"><label>URL ลิงก์กดดูวิเคราะห์ราคาบอล</label><input type="text" id="wm-url" class="form-control" placeholder="ใส่ # หรือลิงก์ภายนอก"></div>
-                    </div>
-                    <div class="mt-4">
-                        <button class="btn btn-gold px-4 text-dark" onclick="pushWC()"><i class="fas fa-arrow-down me-2"></i>เพิ่มลงรายการข้างล่าง</button>
-                        <button class="btn btn-outline px-3 ms-2" onclick="resetWC()">ยกเลิก</button>
-                    </div>
-                </div>
-
-                <div class="action-section">
-                    <h4 class="text-warning mb-3">📋 รายการแมตช์ที่จะโชว์บนหน้าเว็บ (<span id="wc-cnt">0</span> แมตช์)</h4>
-                    <div id="wc-list-render" class="mb-4"></div>
-                    <button class="btn btn-gold w-100 py-3 fs-5 text-dark" onclick="saveWorldCup()"><i class="fas fa-cloud-upload-alt me-2"></i>อัปเดตบอร์ดบอลโลก 2026 ขึ้นหน้าเว็บ ทันที</button>
-                </div>
-
-            </main>
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h1 class="logo-text">TOPFORM<span class="gold-text">369</span></h1>
+          <p class="subtitle">Master Panel</p>
         </div>
+        <nav class="sidebar-nav">
+          <a href="../index.html" class="nav-item"
+            ><i class="fas fa-th-large"></i> แดชบอร์ด</a
+          >
+          <div class="nav-divider">จัดการบอร์ด</div>
+          <a href="admin-board1.html" class="nav-item"
+            ><i class="fas fa-flag"></i> จัดการบอร์ด Hero</a
+          >
+          <a href="admin-board2.html" class="nav-item"
+            ><i class="fas fa-star"></i> จัดการบอร์ด เซียน VIP</a
+          >
+          <a href="admin-board3.html" class="nav-item active"
+            ><i class="fas fa-trophy"></i> จัดการบอร์ด บอลโลก</a
+          >
+          <div class="nav-divider">ระบบ</div>
+          <a href="#" class="nav-item"
+            ><i class="fas fa-cog"></i> ตั้งค่าเว็บ</a
+          >
+        </nav>
+      </aside>
+
+      <div class="main-content">
+        <header class="topbar">
+          <h2 class="page-title">🏆 จัดการบอร์ด 3 : โปรแกรมฟุตบอลโลก 2026</h2>
+          <div class="topbar-actions">
+            <a
+              href="../widget-worldcup.html"
+              target="_blank"
+              class="btn btn-outline"
+              ><i class="fas fa-eye"></i> ดูบอร์ดนี้บนเว็บ</a
+            >
+          </div>
+        </header>
+
+        <main class="content-wrapper">
+          <div class="action-section mb-4">
+            <input type="hidden" id="bid-3" />
+            <h4 class="text-warning mb-3">
+              <i class="fas fa-sliders-h me-2"></i>ข้อความป้ายหัวข้อ &
+              เวลานับถอยหลัง
+            </h4>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="text-warning"
+                  >ป้ายหัวบนสุด (เช่น FIFA WORLD CUP 2026)</label
+                ><input
+                  type="text"
+                  id="wc-top"
+                  class="form-control fw-bold text-warning"
+                  value="FIFA WORLD CUP 2026"
+                />
+              </div>
+              <div class="col-md-6">
+                <label>หัวข้อใหญ่หลัก</label
+                ><input
+                  type="text"
+                  id="wc-head"
+                  class="form-control fw-bold text-white"
+                  value="ฟุตบอลโลก 2026"
+                />
+              </div>
+              <div class="col-md-6">
+                <label>ข้อความเน้น (สีขาว)</label
+                ><input
+                  type="text"
+                  id="wc-today"
+                  class="form-control"
+                  value="3 แมตช์วันนี้"
+                />
+              </div>
+              <div class="col-md-6">
+                <label>ข้อความรอง (สีซิลเวอร์)</label
+                ><input
+                  type="text"
+                  id="wc-upcoming"
+                  class="form-control"
+                  value="13 แมตช์ที่กำลังจะมาถึง"
+                />
+              </div>
+              <div class="col-md-12">
+                <label class="text-warning"
+                  >วันเวลาเตะนัดถัดไป (สำหรับระบบนับถอยหลัง รูปแบบ: YYYY-MM-DD
+                  HH:MM:SS)</label
+                >
+                <input
+                  type="text"
+                  id="wc-target"
+                  class="form-control font-monospace text-warning fw-bold"
+                  placeholder="เช่น 2026-07-01 23:30:00"
+                  value="2026-07-01 00:00:00"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="action-section mb-4" style="border-color: #38bdf8">
+            <h4 class="text-info mb-2">
+              <i class="fas fa-link me-2"></i>ลิงก์ปลายทาง "ดูโปรแกรมทั้งหมด"
+            </h4>
+            <p class="text-muted text-xs mb-3">
+              วาง URL ของเว็บไซต์ที่ต้องการ ระบบจะพาผู้ใช้วิ่งไปยังลิงก์ปลายทางทันทีเมื่อคลิกปุ่ม (เช่น https://...)
+            </p>
+            <input
+              type="text"
+              id="wc-iframe"
+              class="form-control font-monospace"
+              placeholder="https://www.google.com"
+            />
+          </div>
+
+          <div
+            class="action-section mb-4"
+            style="border-color: rgba(212, 175, 55, 0.4)"
+          >
+            <h4 class="text-warning mb-3">
+              <i class="fas fa-plus-circle me-2"></i
+              >ฟอร์มเพิ่มการ์ดแมตช์แข่งขันลงในกริ้ด
+            </h4>
+            <input type="hidden" id="wc-edit-idx" value="-1" />
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label>วันที่แข่ง</label
+                ><input
+                  type="text"
+                  id="wm-date"
+                  class="form-control"
+                  placeholder="30 มิ.ย."
+                />
+              </div>
+              <div class="col-md-3">
+                <label>ป้ายสถานะ (มุมขวาบน)</label
+                ><input
+                  type="text"
+                  id="wm-badge"
+                  class="form-control"
+                  placeholder="วันนี้"
+                />
+              </div>
+              <div class="col-md-3">
+                <label>เวลาเตะ</label
+                ><input
+                  type="text"
+                  id="wm-time"
+                  class="form-control"
+                  placeholder="00:00 น."
+                />
+              </div>
+              <div class="col-md-3">
+                <label>เซียนเลือกทีมเหย้ากี่เปอร์เซ็นต์ (%)</label
+                ><input
+                  type="number"
+                  id="wm-rate"
+                  class="form-control"
+                  placeholder="93"
+                  max="100"
+                />
+              </div>
+
+              <div class="col-md-3">
+                <label>ชื่อทีมเหย้า (ซ้าย)</label
+                ><input
+                  type="text"
+                  id="wm-hn"
+                  class="form-control"
+                  placeholder="บราซิล"
+                />
+              </div>
+              <div class="col-md-3">
+                <label>URL ธงทีมเหย้า</label
+                ><input
+                  type="text"
+                  id="wm-hf"
+                  class="form-control"
+                  placeholder="https://..."
+                />
+              </div>
+              <div class="col-md-3">
+                <label>ชื่อทีมเยือน (ขวา)</label
+                ><input
+                  type="text"
+                  id="wm-an"
+                  class="form-control"
+                  placeholder="ญี่ปุ่น"
+                />
+              </div>
+              <div class="col-md-3">
+                <label>URL ธงทีมเยือน</label
+                ><input
+                  type="text"
+                  id="wm-af"
+                  class="form-control"
+                  placeholder="https://..."
+                />
+              </div>
+
+              <div class="col-md-12">
+                <label>URL ลิงก์กดดูวิเคราะห์ราคาบอล</label
+                ><input
+                  type="text"
+                  id="wm-url"
+                  class="form-control"
+                  placeholder="ใส่ # หรือลิงก์ภายนอก"
+                />
+              </div>
+            </div>
+            <div class="mt-4">
+              <button class="btn btn-gold px-4 text-dark" onclick="pushWC()">
+                <i class="fas fa-arrow-down me-2"></i>เพิ่มลงรายการข้างล่าง
+              </button>
+              <button class="btn btn-outline px-3 ms-2" onclick="resetWC()">
+                ยกเลิก
+              </button>
+            </div>
+          </div>
+
+          <div class="action-section">
+            <h4 class="text-warning mb-3">
+              📋 รายการแมตช์ที่จะโชว์บนหน้าเว็บ (<span id="wc-cnt">0</span>
+              แมตช์)
+            </h4>
+            <div id="wc-list-render" class="mb-4"></div>
+            <button
+              class="btn btn-gold w-100 py-3 fs-5 text-dark"
+              onclick="saveWorldCup()"
+            >
+              <i class="fas fa-cloud-upload-alt me-2"></i>อัปเดตบอร์ดบอลโลก 2026
+              ขึ้นหน้าเว็บ ทันที
+            </button>
+          </div>
+        </main>
+      </div>
     </div>
 
     <script>
-        const db = window.supabase.createClient('https://pcrurldhpubyznrdackb.supabase.co', 'sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0');
-        let wcList = [];
+      const db = window.supabase.createClient(
+        "https://pcrurldhpubyznrdackb.supabase.co",
+        "sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0"
+      );
+      let wcList = [];
 
-        async function loadWorldCupData() {
-            const r = await db.from('tbl_worldcup_board').select('*').order('id', { ascending: false }).limit(1);
-            if(r.data && r.data[0]) {
-                const d = r.data[0];
-                document.getElementById('bid-3').value = d.id;
-                document.getElementById('wc-top').value = d.top_badge || 'FIFA WORLD CUP 2026';
-                document.getElementById('wc-head').value = d.header_title;
-                document.getElementById('wc-today').value = d.today_count;
-                document.getElementById('wc-upcoming').value = d.upcoming_count;
-                document.getElementById('wc-target').value = d.countdown_target;
-                document.getElementById('wc-iframe').value = d.iframe_code || '';
-                wcList = d.matches_list || [];
-                drawWC();
-            }
+      async function loadWorldCupData() {
+        const r = await db
+          .from("tbl_worldcup_board")
+          .select("*")
+          .order("id", { ascending: false })
+          .limit(1);
+        if (r.data && r.data[0]) {
+          const d = r.data[0];
+          document.getElementById("bid-3").value = d.id;
+          document.getElementById("wc-top").value =
+            d.top_badge || "FIFA WORLD CUP 2026";
+          document.getElementById("wc-head").value = d.header_title;
+          document.getElementById("wc-today").value = d.today_count;
+          document.getElementById("wc-upcoming").value = d.upcoming_count;
+          document.getElementById("wc-target").value = d.countdown_target;
+          document.getElementById("wc-iframe").value = d.iframe_code || "";
+          wcList = d.matches_list || [];
+          drawWC();
         }
+      }
 
-        function drawWC() {
-            const box = document.getElementById('wc-list-render');
-            document.getElementById('wc-cnt').innerText = wcList.length;
-            if(wcList.length === 0) { box.innerHTML = '<p class="text-muted text-center py-4">ยังไม่มีแมตช์แข่งขันครับ กรอกด้านบนแล้วกดเพิ่มได้เลย</p>'; return; }
-            box.innerHTML = '';
-            wcList.forEach((m, i) => {
-                box.innerHTML += `
+      function drawWC() {
+        const box = document.getElementById("wc-list-render");
+        document.getElementById("wc-cnt").innerText = wcList.length;
+        if (wcList.length === 0) {
+          box.innerHTML =
+            '<p class="text-muted text-center py-4">ยังไม่มีแมตช์แข่งขันครับ กรอกด้านบนแล้วกดเพิ่มได้เลย</p>';
+          return;
+        }
+        box.innerHTML = "";
+        wcList.forEach((m, i) => {
+          box.innerHTML += `
                     <div class="dynamic-item">
                         <div class="d-flex align-items-center gap-3 overflow-hidden">
-                            <span class="badge bg-warning text-dark">${i+1}</span>
-                            <img src="${m.h_flag}" style="width:32px;height:20px;object-fit:cover;border-radius:3px;background:#222;">
-                            <span class="fw-bold fs-6 text-white">${m.h_name}</span>
+                            <span class="badge bg-warning text-dark">${
+                              i + 1
+                            }</span>
+                            <img src="${
+                              m.h_flag
+                            }" style="width:32px;height:20px;object-fit:cover;border-radius:3px;background:#222;">
+                            <span class="fw-bold fs-6 text-white">${
+                              m.h_name
+                            }</span>
                             <span class="badge bg-dark border text-warning">VS</span>
-                            <span class="fw-bold fs-6 text-white">${m.a_name}</span>
-                            <img src="${m.a_flag}" style="width:32px;height:20px;object-fit:cover;border-radius:3px;background:#222;">
-                            <span class="text-muted ms-2" style="font-size:0.78rem;">(${m.date} - ${m.time})</span>
+                            <span class="fw-bold fs-6 text-white">${
+                              m.a_name
+                            }</span>
+                            <img src="${
+                              m.a_flag
+                            }" style="width:32px;height:20px;object-fit:cover;border-radius:3px;background:#222;">
+                            <span class="text-muted ms-2" style="font-size:0.78rem;">(${
+                              m.date
+                            } - ${m.time})</span>
                         </div>
                         <div class="text-nowrap">
-                            <button class="btn btn-outline p-2" onclick="swapWC(${i}, -1)" ${i===0?'disabled':''}><i class="fas fa-arrow-up"></i></button>
-                            <button class="btn btn-outline p-2" onclick="swapWC(${i}, 1)" ${i===wcList.length-1?'disabled':''}><i class="fas fa-arrow-down"></i></button>
+                            <button class="btn btn-outline p-2" onclick="swapWC(${i}, -1)" ${
+            i === 0 ? "disabled" : ""
+          }><i class="fas fa-arrow-up"></i></button>
+                            <button class="btn btn-outline p-2" onclick="swapWC(${i}, 1)" ${
+            i === wcList.length - 1 ? "disabled" : ""
+          }><i class="fas fa-arrow-down"></i></button>
                             <button class="btn btn-outline p-2 text-info" onclick="editWC(${i})"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-outline p-2 text-danger" onclick="delWC(${i})"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
                 `;
-            });
+        });
+      }
+
+      function pushWC() {
+        const hn = document.getElementById("wm-hn").value;
+        const an = document.getElementById("wm-an").value;
+        if (!hn || !an) return alert("กรุณาใส่ชื่อทีมเหย้าและทีมเยือนครับ");
+
+        const obj = {
+          date: document.getElementById("wm-date").value || "30 มิ.ย.",
+          badge: document.getElementById("wm-badge").value || "วันนี้",
+          time: document.getElementById("wm-time").value || "00:00 น.",
+          rate: parseInt(document.getElementById("wm-rate").value || 50),
+          h_name: hn,
+          h_flag:
+            document.getElementById("wm-hf").value ||
+            "https://flagcdn.com/w80/un.png",
+          a_name: an,
+          a_flag:
+            document.getElementById("wm-af").value ||
+            "https://flagcdn.com/w80/un.png",
+          url: document.getElementById("wm-url").value || "#",
+        };
+
+        const idx = parseInt(document.getElementById("wc-edit-idx").value);
+        if (idx >= 0) wcList[idx] = obj;
+        else wcList.push(obj);
+        resetWC();
+        drawWC();
+      }
+
+      function editWC(i) {
+        const m = wcList[i];
+        document.getElementById("wc-edit-idx").value = i;
+        document.getElementById("wm-date").value = m.date;
+        document.getElementById("wm-badge").value = m.badge;
+        document.getElementById("wm-time").value = m.time;
+        document.getElementById("wm-rate").value = m.rate;
+        document.getElementById("wm-hn").value = m.h_name;
+        document.getElementById("wm-hf").value = m.h_flag;
+        document.getElementById("wm-an").value = m.a_name;
+        document.getElementById("wm-af").value = m.a_flag;
+        document.getElementById("wm-url").value = m.url;
+      }
+
+      function delWC(i) {
+        if (confirm("ลบแมตช์นี้?")) {
+          wcList.splice(i, 1);
+          drawWC();
         }
+      }
+      function swapWC(i, dir) {
+        const tmp = wcList[i];
+        wcList[i] = wcList[i + dir];
+        wcList[i + dir] = tmp;
+        drawWC();
+      }
+      function resetWC() {
+        document.getElementById("wc-edit-idx").value = -1;
+        document
+          .querySelectorAll('input[id^="wm-"]')
+          .forEach((e) => (e.value = ""));
+      }
 
-        function pushWC() {
-            const hn = document.getElementById('wm-hn').value;
-            const an = document.getElementById('wm-an').value;
-            if(!hn || !an) return alert('กรุณาใส่ชื่อทีมเหย้าและทีมเยือนครับ');
+      async function saveWorldCup() {
+        const payload = {
+          top_badge: document.getElementById("wc-top").value,
+          header_title: document.getElementById("wc-head").value,
+          today_count: document.getElementById("wc-today").value,
+          upcoming_count: document.getElementById("wc-upcoming").value,
+          countdown_target: document.getElementById("wc-target").value,
+          iframe_code: document.getElementById("wc-iframe").value,
+          matches_list: wcList,
+        };
+        const id = document.getElementById("bid-3").value;
+        if (!id) {
+          const { data } = await db
+            .from("tbl_worldcup_board")
+            .insert([payload])
+            .select();
+          document.getElementById("bid-3").value = data[0].id;
+        } else await db.from("tbl_worldcup_board").update(payload).eq("id", id);
+        alert("🏆 อัปเดตบอร์ดฟุตบอลโลก 2026 ขึ้นหน้าเว็บเรียบร้อยแล้ว!");
+      }
 
-            const obj = {
-                date: document.getElementById('wm-date').value || '30 มิ.ย.',
-                badge: document.getElementById('wm-badge').value || 'วันนี้',
-                time: document.getElementById('wm-time').value || '00:00 น.',
-                rate: parseInt(document.getElementById('wm-rate').value || 50),
-                h_name: hn,
-                h_flag: document.getElementById('wm-hf').value || 'https://flagcdn.com/w80/un.png',
-                a_name: an,
-                a_flag: document.getElementById('wm-af').value || 'https://flagcdn.com/w80/un.png',
-                url: document.getElementById('wm-url').value || '#'
-            };
-
-            const idx = parseInt(document.getElementById('wc-edit-idx').value);
-            if(idx >= 0) wcList[idx] = obj; else wcList.push(obj);
-            resetWC(); drawWC();
-        }
-
-        function editWC(i) {
-            const m = wcList[i];
-            document.getElementById('wc-edit-idx').value = i;
-            document.getElementById('wm-date').value = m.date;
-            document.getElementById('wm-badge').value = m.badge;
-            document.getElementById('wm-time').value = m.time;
-            document.getElementById('wm-rate').value = m.rate;
-            document.getElementById('wm-hn').value = m.h_name;
-            document.getElementById('wm-hf').value = m.h_flag;
-            document.getElementById('wm-an').value = m.a_name;
-            document.getElementById('wm-af').value = m.a_flag;
-            document.getElementById('wm-url').value = m.url;
-        }
-
-        function delWC(i) { if(confirm('ลบแมตช์นี้?')) { wcList.splice(i, 1); drawWC(); } }
-        function swapWC(i, dir) { const tmp = wcList[i]; wcList[i] = wcList[i+dir]; wcList[i+dir] = tmp; drawWC(); }
-        function resetWC() { document.getElementById('wc-edit-idx').value = -1; document.querySelectorAll('input[id^="wm-"]').forEach(e => e.value=''); }
-
-        async function saveWorldCup() {
-            const payload = { 
-                top_badge: document.getElementById('wc-top').value,
-                header_title: document.getElementById('wc-head').value, 
-                today_count: document.getElementById('wc-today').value, 
-                upcoming_count: document.getElementById('wc-upcoming').value, 
-                countdown_target: document.getElementById('wc-target').value, 
-                iframe_code: document.getElementById('wc-iframe').value,
-                matches_list: wcList 
-            };
-            const id = document.getElementById('bid-3').value;
-            if(!id) { const { data } = await db.from('tbl_worldcup_board').insert([payload]).select(); document.getElementById('bid-3').value = data[0].id; }
-            else await db.from('tbl_worldcup_board').update(payload).eq('id', id);
-            alert('🏆 อัปเดตบอร์ดฟุตบอลโลก 2026 ขึ้นหน้าเว็บเรียบร้อยแล้ว!');
-        }
-
-        window.onload = loadWorldCupData;
+      window.onload = loadWorldCupData;
     </script>
-</body>
+  </body>
 </html>
