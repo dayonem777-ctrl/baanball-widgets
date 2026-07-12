@@ -56,7 +56,7 @@
       }
 
       .team-box {
-        width: 42%;
+        width: 44%; /* ขยายพื้นที่นิดหน่อยเพื่อรองรับการซ้อนทับ */
         display: flex;
         align-items: center;
         position: relative;
@@ -66,21 +66,24 @@
         flex-direction: row-reverse;
       }
 
-      /* ปรับขนาดธงให้ใหญ่ขึ้นและดูมีมิติมากขึ้น */
+      /* ==============================================
+         ปรับแต่งธงให้ลอย "ทับ" แถบสี (Overlap Effect)
+      ============================================== */
       .flag {
-        width: 84px;
-        height: 56px;
-        object-fit: cover;
-        border-radius: 6px;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-        z-index: 10;
-        background: #eee;
-        border: 1px solid #e5e7eb;
+        width: 75px;
+        height: 75px;
+        object-fit: contain;
+        background: transparent;
+        border: none;
+        /* เพิ่มเงาตกกระทบให้ดูเป็น 3D ลอยอยู่เหนือแถบสี */
+        filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.3)); 
+        position: relative;
+        z-index: 10; /* บังคับให้อยู่เลเยอร์บนสุดเสมอ */
       }
       @media (max-width: 600px) {
         .flag {
-          width: 56px;
-          height: 38px;
+          width: 55px;
+          height: 55px;
         }
       }
 
@@ -93,7 +96,7 @@
         display: flex;
         align-items: center;
         position: relative;
-        z-index: 2;
+        z-index: 2; /* ให้อยู่เลเยอร์ใต้ธง */
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
       }
       @media (max-width: 600px) {
@@ -103,16 +106,29 @@
         }
       }
 
+      /* เทคนิคดึงแถบสีให้มุดไปใต้ธงด้วย margin ติดลบ */
       .ribbon.left {
         clip-path: polygon(0 0, 92% 0, 100% 100%, 0 100%);
-        padding-left: 15px;
-        margin-left: -10px;
+        padding-left: 45px; /* ดันข้อความไม่ให้โดนธงบัง */
+        margin-left: -35px; /* ดึงแถบซ้ายมุดใต้ธง */
       }
       .ribbon.right {
         clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
-        padding-right: 15px;
-        margin-left: -10px;
+        padding-right: 45px;
+        margin-right: -35px; /* ดึงแถบขวามุดใต้ธง */
         justify-content: flex-end;
+      }
+
+      /* ปรับระยะในมือถือให้สวยงาม */
+      @media (max-width: 600px) {
+        .ribbon.left {
+          padding-left: 35px;
+          margin-left: -25px;
+        }
+        .ribbon.right {
+          padding-right: 35px;
+          margin-right: -25px;
+        }
       }
 
       .player {
