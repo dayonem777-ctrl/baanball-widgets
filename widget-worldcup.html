@@ -34,34 +34,30 @@
         cursor: grabbing !important;
       }
 
-      #iframe-container iframe {
-        width: 950px !important;
-        height: 1200px !important;
-        min-height: 1200px !important;
-        max-width: none !important;
-        border: none !important;
-        border-radius: 8px;
-        background-color: #fff;
-      }
-
       .glass-card {
         background: linear-gradient(
           135deg,
-          rgba(28, 28, 30, 0.85) 0%,
-          rgba(12, 12, 14, 0.95) 100%
+          rgba(30, 30, 35, 0.9) 0%,
+          rgba(15, 15, 18, 0.98) 100%
         );
-        border-top: 1px solid rgba(255, 255, 255, 0.15);
-        border-left: 1px solid rgba(255, 255, 255, 0.1);
-        border-right: 1px solid rgba(197, 160, 89, 0.15);
-        border-bottom: 1px solid rgba(197, 160, 89, 0.1);
-        border-radius: 16px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5),
-          inset 0 2px 4px rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        transition: all 0.3s ease;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        border-left: 1px solid rgba(255, 255, 255, 0.08);
+        border-right: 1px solid rgba(197, 160, 89, 0.2);
+        border-bottom: 1px solid rgba(197, 160, 89, 0.12);
+        border-radius: 18px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6),
+          inset 0 1px 2px rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
         position: relative;
         overflow: hidden;
+      }
+
+      .glass-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.1), 0 5px 15px rgba(0, 0, 0, 0.5);
+        border-right-color: rgba(212, 175, 55, 0.3);
       }
 
       .glass-card::after {
@@ -81,56 +77,28 @@
       }
 
       .btn-glass {
-        background: linear-gradient(180deg, #ffffff 0%, #e4e4e7 100%);
-        color: #000000;
-        border-top: 1px solid #ffffff;
-        border-bottom: 1px solid #a1a1aa;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-        transition: all 0.2s ease;
+        background: linear-gradient(180deg, #1e1e24 0%, #121215 100%);
+        color: #ffffff;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
       .btn-glass:hover {
-        transform: translateY(-1px);
+        transform: translateY(-2px);
+        border-color: rgba(212, 175, 55, 0.8);
+        box-shadow: 0 6px 16px rgba(212, 175, 55, 0.15);
+        color: #f3e5ab;
       }
     </style>
   </head>
   <body class="bg-transparent m-0 p-0">
     <div
       id="wc-mount"
-      class="w-full bg-[#09090b] text-white p-3 rounded-xl border border-zinc-800 shadow-xl relative overflow-hidden font-sans flex flex-col justify-center"
+      class="w-full bg-[#09090b] text-white p-4 rounded-2xl border border-zinc-800 shadow-xl relative overflow-hidden font-sans flex flex-col justify-center"
     >
       <div class="flex justify-center items-center py-10">
         <p class="text-zinc-500 animate-pulse text-sm">กำลังดึงข้อมูล...</p>
-      </div>
-    </div>
-
-    <!-- Modal สำหรับ Iframe -->
-    <div
-      id="iframe-modal"
-      class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex justify-center items-center p-2 md:p-6"
-    >
-      <div
-        class="bg-[#121215] border border-zinc-700 w-full max-w-[1000px] max-h-[95vh] rounded-2xl overflow-hidden flex flex-col shadow-2xl relative"
-      >
-        <div
-          class="p-4 bg-[#1a1a1e] border-b border-zinc-800 flex justify-between items-center shrink-0"
-        >
-          <span
-            class="font-bold text-[#D4AF37] flex items-center gap-2 text-sm"
-          >
-            ตารางคะแนน & สถิติ
-          </span>
-          <button
-            onclick="closeModal()"
-            class="text-zinc-400 hover:text-white bg-zinc-800 hover:bg-red-500 px-3 py-1 rounded-lg text-xs font-bold"
-          >
-            ปิดหน้าต่าง X
-          </button>
-        </div>
-        <div
-          id="iframe-container"
-          class="overflow-auto flex-grow bg-black/50"
-        ></div>
       </div>
     </div>
 
@@ -139,7 +107,6 @@
         "https://pcrurldhpubyznrdackb.supabase.co/rest/v1/tbl_worldcup_board";
       const API_KEY = "sb_publishable_iM2V0yw1KKfpGVwa7LwDXg_KbL3lGG0";
       let timerInterval = null;
-      let storedIframeCode = "";
 
       async function initWorldCup() {
         const mount = document.getElementById("wc-mount");
@@ -157,33 +124,47 @@
 
           const d = data[data.length - 1];
           const list = d.matches_list || [];
-          storedIframeCode = d.iframe_code || "";
+          const rawIframeCode = d.iframe_code || "";
 
-          // ส่วนหัว (Header) ที่มีการปรับขนาดตัวหนังสือให้ใหญ่และชัดเจนขึ้น
+          // ถอดรหัสหา URL จริงจากฐานข้อมูล (รองรับทั้ง URL ตรงๆ และ แท็ก iframe)
+          let targetUrl = "javascript:void(0);";
+          if (rawIframeCode.trim() !== "") {
+            const trimmed = rawIframeCode.trim();
+            if (trimmed.startsWith("http")) {
+              targetUrl = trimmed;
+            } else {
+              const match = trimmed.match(/src=["']([^"']+)["']/i);
+              if (match && match[1]) {
+                targetUrl = match[1];
+              }
+            }
+          }
+
+          // ส่วนหัว (Header)
           let html = `
             <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-500/5 rounded-full blur-2xl pointer-events-none"></div>
 
-            <div class="bg-gradient-to-r from-[#121215] via-[#1a1a1e] to-[#121215] px-5 py-3 rounded-lg border border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-3 mb-4 gold-glow relative z-10">
+            <div class="bg-gradient-to-r from-[#121215] via-[#1a1a1e] to-[#121215] px-5 py-4 rounded-xl border border-zinc-800 flex flex-col md:flex-row justify-between items-center gap-4 mb-4 gold-glow relative z-10">
                 <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
                     <div>
-                        <!-- ขยายตัวหนังสือชื่อทัวร์นาเมนต์ให้ใหญ่ขึ้น (text-2xl / text-3xl) -->
-                        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-zinc-400 leading-tight">${d.header_title}</h1>
-                        <div class="flex items-center gap-2 mt-2">
-                            <!-- ขยายขนาดป้ายจำนวนแมตช์ให้ใหญ่ขึ้นเล็กน้อย (text-xs) -->
-                            <span class="text-black bg-white px-2 py-0.5 rounded text-xs font-bold">${d.today_count}</span> 
-                            <!-- ขยายข้อความรอบการแข่งขันให้ใหญ่ขึ้น (text-sm) -->
-                            <span class="text-[#A1A1AA] text-sm font-medium">${d.upcoming_count}</span>
+                        <h1 class="text-2xl md:text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-100 to-zinc-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-tight">${d.header_title}</h1>
+                        <div class="flex items-center gap-2 mt-2.5">
+                            <span class="text-black bg-gradient-to-r from-yellow-400 to-yellow-300 px-2.5 py-0.5 rounded-md text-xs font-black shadow-sm">${d.today_count}</span> 
+                            <span class="text-zinc-200 text-sm font-semibold tracking-wide drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">${d.upcoming_count}</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-black/60 border border-zinc-700 px-3 py-1.5 rounded-lg flex items-center gap-2 w-full md:w-auto justify-center">
-                    <span class="text-[10px] text-zinc-400">เตะนัดถัดไป</span>
-                    <div id="wc-timer" class="flex items-baseline gap-1 font-mono font-bold text-xs">
-                        <span class="text-yellow-400">0</span><span class="text-[9px] text-zinc-500">ว</span>:
-                        <span class="text-yellow-400">00</span><span class="text-[9px] text-zinc-500">ช</span>:
-                        <span class="text-yellow-400">00</span><span class="text-[9px] text-zinc-500">น</span>:
-                        <span class="text-yellow-400">00</span><span class="text-[9px] text-zinc-500">วิ</span>
+                <div class="bg-zinc-950/80 border border-zinc-700/85 px-4 py-2 rounded-xl flex items-center gap-3 w-full md:w-auto justify-center shadow-lg backdrop-blur-md">
+                    <div class="flex flex-col items-center md:items-start shrink-0">
+                        <span class="text-[9px] uppercase tracking-widest text-zinc-400 font-bold">เตะนัดถัดไป</span>
+                        <span class="text-[10px] text-[#D4AF37] font-medium">COUNTDOWN</span>
+                    </div>
+                    <div id="wc-timer" class="flex items-center gap-1 font-mono font-bold text-xs">
+                        <span class="bg-zinc-900 px-1.5 py-0.5 rounded text-yellow-400 text-sm font-extrabold">0</span><span class="text-[9px] text-zinc-500 ml-0.5">วัน</span>
+                        <span class="bg-zinc-900 px-1.5 py-0.5 rounded text-yellow-400 text-sm font-extrabold">00</span><span class="text-[9px] text-zinc-500 ml-0.5">ชม</span>
+                        <span class="bg-zinc-900 px-1.5 py-0.5 rounded text-yellow-400 text-sm font-extrabold">00</span><span class="text-[9px] text-zinc-500 ml-0.5">น</span>
+                        <span class="bg-zinc-900 px-1.5 py-0.5 rounded text-yellow-400 text-sm font-extrabold">00</span><span class="text-[9px] text-zinc-500 ml-0.5">วิ</span>
                     </div>
                 </div>
             </div>
@@ -192,47 +173,50 @@
           if (list.length === 0) {
             html += `<p class="text-center text-zinc-500 py-4 text-xs">ยังไม่มีแมตช์</p>`;
           } else {
-            html += `<div id="slider-container" class="flex flex-row overflow-x-auto gap-3 relative z-10 pb-1 snap-x snap-mandatory hide-scroll cursor-grab">`;
+            html += `<div id="slider-container" class="flex flex-row overflow-x-auto gap-3 relative z-10 pb-2 snap-x snap-mandatory hide-scroll cursor-grab">`;
 
             list.forEach((m) => {
               const hRate = m.rate || 50;
               const aRate = 100 - hRate;
 
               html += `
-                <div class="glass-card min-w-[240px] md:min-w-[260px] flex-none snap-start p-3 flex flex-col justify-between select-none">
+                <div class="glass-card min-w-[250px] md:min-w-[280px] flex-none snap-start p-4 flex flex-col justify-between select-none">
                     <div class="relative z-10">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-[10px] font-semibold text-[#A1A1AA] font-mono">${
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-semibold text-zinc-300 font-mono tracking-wider">${
                               m.date
                             }</span>
-                            <span class="bg-white text-black text-[8px] font-black px-1.5 py-[2px] rounded uppercase">${
+                            <span class="bg-yellow-400 text-black text-[9px] font-black px-2 py-0.5 rounded tracking-wide uppercase shadow-sm">${
                               m.badge
                             }</span>
                         </div>
 
-                        <div class="grid grid-cols-3 items-center my-1 pointer-events-none">
-                            <div class="flex flex-col items-center text-center gap-1">
-                                <div class="w-10 h-6 rounded bg-[#0a0a0c] border border-zinc-700/50 flex justify-center">
+                        <div class="grid grid-cols-3 items-center my-2 pointer-events-none gap-1">
+                            <!-- ทีมเหย้า -->
+                            <div class="flex flex-col items-center text-center gap-2">
+                                <div class="w-12 h-12 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex items-center justify-center p-1.5 transition-all duration-300 shadow-inner">
                                     <img src="${
                                       m.h_flag
-                                    }" alt="" class="w-full h-full object-cover" onerror="this.src='https://flagcdn.com/w40/un.png'">
+                                    }" alt="" class="max-w-full max-h-full object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" onerror="this.src='https://flagcdn.com/w40/un.png'">
                                 </div>
-                                <span class="font-bold text-[11px] text-white line-clamp-1">${
+                                <span class="font-bold text-xs text-white line-clamp-2 tracking-wide h-8 flex items-center justify-center leading-tight">${
                                   m.h_name
                                 }</span>
                             </div>
 
-                            <div class="flex justify-center">
-                                <span class="text-[9px] font-black text-[#D4AF37] bg-black/40 px-2 py-0.5 rounded-full border border-[#D4AF37]/40">VS</span>
+                            <!-- ป้าย VS -->
+                            <div class="flex flex-col items-center justify-center">
+                                <span class="text-[10px] font-black text-yellow-400 bg-yellow-400/10 px-2.5 py-1 rounded-full border border-yellow-400/30 tracking-widest shadow-[0_0_10px_rgba(212,175,55,0.05)]">VS</span>
                             </div>
 
-                            <div class="flex flex-col items-center text-center gap-1">
-                                <div class="w-10 h-6 rounded bg-[#0a0a0c] border border-zinc-700/50 flex justify-center">
+                            <!-- ทีมเยือน -->
+                            <div class="flex flex-col items-center text-center gap-2">
+                                <div class="w-12 h-12 rounded-xl bg-zinc-900/60 border border-zinc-800/80 flex items-center justify-center p-1.5 transition-all duration-300 shadow-inner">
                                     <img src="${
                                       m.a_flag
-                                    }" alt="" class="w-full h-full object-cover" onerror="this.src='https://flagcdn.com/w40/un.png'">
+                                    }" alt="" class="max-w-full max-h-full object-contain filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" onerror="this.src='https://flagcdn.com/w40/un.png'">
                                 </div>
-                                <span class="font-bold text-[11px] text-white line-clamp-1">${
+                                <span class="font-bold text-xs text-white line-clamp-2 tracking-wide h-8 flex items-center justify-center leading-tight">${
                                   m.a_name
                                 }</span>
                             </div>
@@ -240,26 +224,26 @@
                     </div>
 
                     <div class="relative z-10">
-                        <div class="mt-2 pt-1.5 border-t border-zinc-700/50 pointer-events-none">
-                            <div class="flex justify-between text-[9px] mb-1">
-                                <span class="text-zinc-300">เซียนเลือก <strong class="text-[#F3E5AB] ml-0.5">${hRate}%</strong></span>
-                                <span class="text-zinc-400">${aRate}%</span>
+                        <div class="mt-3 pt-2.5 border-t border-zinc-800/60 pointer-events-none">
+                            <div class="flex justify-between text-[10px] mb-1.5 font-semibold">
+                                <span class="text-zinc-300">เซียนเลือก <strong class="text-yellow-300 ml-0.5 font-bold">${hRate}%</strong></span>
+                                <span class="text-zinc-400 font-bold">${aRate}%</span>
                             </div>
-                            <div class="w-full bg-black/60 h-1 rounded-full overflow-hidden flex border border-zinc-800/80">
-                                <div class="bg-gradient-to-r from-[#D4AF37] to-[#F3E5AB] h-full" style="width: ${hRate}%"></div>
-                                <div class="bg-zinc-600/50 h-full" style="width: ${aRate}%"></div>
+                            <div class="w-full bg-black/80 h-1.5 rounded-full overflow-hidden flex border border-zinc-800/80">
+                                <div class="bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-300 h-full rounded-full" style="width: ${hRate}%"></div>
+                                <div class="bg-zinc-800 h-full rounded-full" style="width: ${aRate}%"></div>
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center mt-2 pt-1.5 border-t border-zinc-700/50">
-                            <span class="text-yellow-400 font-mono font-bold text-[10px] flex items-center gap-1 pointer-events-none">
-                                <span class="w-1 h-1 rounded-full bg-yellow-400 animate-pulse"></span>
+                        <div class="flex justify-between items-center mt-3 pt-2.5 border-t border-zinc-800/60">
+                            <span class="text-yellow-400 font-mono font-bold text-[11px] flex items-center gap-1.5 pointer-events-none">
+                                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span>
                                 ${m.time}
                             </span>
                             <a href="${
                               m.url || "#"
-                            }" target="_blank" class="text-[10px] font-semibold text-[#e4e4e7] hover:text-[#F3E5AB] flex items-center relative z-20">
-                                วิเคราะห์ <span class="text-[#D4AF37] ml-0.5">→</span>
+                            }" target="_blank" class="text-[11px] font-bold text-zinc-200 hover:text-yellow-300 transition-colors duration-200 flex items-center relative z-20 group">
+                                วิเคราะห์ <span class="text-yellow-400 ml-0.5 transform group-hover:translate-x-1 transition-transform duration-200">→</span>
                             </a>
                         </div>
                     </div>
@@ -270,12 +254,23 @@
             html += `</div>`;
           }
 
+          // ส่วนท้าย (Footer) - เปลี่ยนปุ่มดูโปรแกรมทั้งหมดให้วิ่งตรงไปยังลิงก์ปลายทางแบบเปิดแท็บใหม่ทันที
           html += `
-            <footer class="mt-2 pt-2 border-t border-zinc-800/50 flex justify-center md:justify-start relative z-10">
-                <button onclick="openModal()" class="btn-glass font-bold px-4 py-1.5 flex items-center gap-1.5 text-[11px] cursor-pointer">
-                    <span>ดูโปรแกรมทั้งหมด</span>
-                    <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6a.9959.9959 0 0 0-1.41 0c-.39.39-.39 1.02 0 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"/></svg>
-                </button>
+            <footer class="mt-3 pt-3 border-t border-zinc-800/50 flex justify-center md:justify-start relative z-10">
+                <a 
+                  href="${targetUrl}" 
+                  ${
+                    targetUrl !== "javascript:void(0);"
+                      ? 'target="_blank"'
+                      : 'onclick="alert(\'ขออภัย! ขณะนี้ยังไม่ได้ตั้งค่าลิงก์โปรแกรมการแข่งขันในระบบ\')"'
+                  } 
+                  class="btn-glass group font-bold px-5 py-2 flex items-center gap-2 text-xs cursor-pointer"
+                >
+                    <span>ดูโปรแกรมการแข่งขันทั้งหมด</span>
+                    <svg class="w-3.5 h-3.5 fill-current transition-transform duration-200 group-hover:translate-x-0.5" viewBox="0 0 24 24">
+                        <path d="M5 13h11.17l-4.88 4.88c-.39.39-.39 1.03 0 1.42.39.39 1.02.39 1.41 0l6.59-6.59c.39-.39.39-1.02 0-1.41l-6.58-6.6a.9959.9959 0 0 0-1.41 0c-.39.39-.39 1.02 0 1.41L16.17 11H5c-.55 0-1 .45-1 1s.45 1 1 1z"/>
+                    </svg>
+                </a>
             </footer>
           `;
 
@@ -284,7 +279,7 @@
           if (list.length > 0) enableDragScroll();
           if (d.countdown_target) runTimer(d.countdown_target);
         } catch (e) {
-          mount.innerHTML = `<p class="text-red-500 text-center py-4 text-sm">เกิดข้อผิดพลาด</p>`;
+          mount.innerHTML = `<p class="text-red-500 text-center py-4 text-sm">เกิดข้อผิดพลาดในการดึงข้อมูล</p>`;
         }
       }
 
@@ -318,23 +313,6 @@
         });
       }
 
-      function openModal() {
-        if (!storedIframeCode || storedIframeCode.trim() === "")
-          return alert("ยังไม่ได้ใส่ข้อมูลลิงก์ Iframe");
-        const modal = document.getElementById("iframe-modal");
-        const container = document.getElementById("iframe-container");
-        modal.classList.remove("hidden");
-        let finalHTML = storedIframeCode.trim();
-        if (finalHTML.startsWith("http"))
-          finalHTML = `<iframe src="${finalHTML}"></iframe>`;
-        container.innerHTML = finalHTML;
-      }
-
-      function closeModal() {
-        document.getElementById("iframe-modal").classList.add("hidden");
-        document.getElementById("iframe-container").innerHTML = "";
-      }
-
       function runTimer(targetStr) {
         if (timerInterval) clearInterval(timerInterval);
         const target = new Date(targetStr.replace(/-/g, "/")).getTime();
@@ -345,7 +323,7 @@
           const el = document.getElementById("wc-timer");
           if (!el) return;
           if (diff <= 0) {
-            el.innerHTML = `<span class="text-red-500 font-bold text-xs">ถึงเวลาแข่ง!</span>`;
+            el.innerHTML = `<span class="text-red-500 font-black text-sm tracking-wide animate-pulse">ถึงเวลาฟาดแข้งแล้ว!</span>`;
             return clearInterval(timerInterval);
           }
           const d = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -357,16 +335,16 @@
           const pad = (n) => (n < 10 ? "0" + n : n);
 
           el.innerHTML = `
-            <span class="text-yellow-400 text-sm">${d}</span><span class="text-[9px] text-zinc-500">ว</span> :
-            <span class="text-yellow-400 text-sm">${pad(
+            <span class="bg-zinc-900 px-1.5 py-0.5 rounded text-yellow-400 text-sm font-extrabold shadow">${d}</span><span class="text-[9px] text-zinc-400 ml-0.5 mr-1.5">วัน</span>
+            <span class="bg-zinc-900 px-1.5 py-0.5 rounded text-yellow-400 text-sm font-extrabold shadow">${pad(
               h
-            )}</span><span class="text-[9px] text-zinc-500">ช</span> :
-            <span class="text-yellow-400 text-sm">${pad(
+            )}</span><span class="text-[9px] text-zinc-400 ml-0.5 mr-1.5">ชม</span>
+            <span class="bg-zinc-900 px-1.5 py-0.5 rounded text-yellow-400 text-sm font-extrabold shadow">${pad(
               m
-            )}</span><span class="text-[9px] text-zinc-500">น</span> :
-            <span class="text-yellow-400 text-sm">${pad(
+            )}</span><span class="text-[9px] text-zinc-400 ml-0.5 mr-1.5">น</span>
+            <span class="bg-zinc-900 px-1.5 py-0.5 rounded text-red-400 text-sm font-extrabold shadow animate-pulse">${pad(
               s
-            )}</span><span class="text-[9px] text-zinc-500">วิ</span>
+            )}</span><span class="text-[9px] text-zinc-400 ml-0.5">วิ</span>
           `;
         };
         update();
